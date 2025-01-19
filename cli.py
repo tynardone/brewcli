@@ -24,7 +24,6 @@ def random(number):
 
     for result in breweries:
         click.echo(result)
-    pass
 
 
 if __name__ == "__main__":
