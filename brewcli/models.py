@@ -24,7 +24,7 @@ class Address:
     street: str
     city: str
     state: str
-    posta_code: str
+    postal_code: str
     country: str
     coordinate: Coordinate
 
@@ -40,7 +40,7 @@ class Address:
             street=data["street"],
             city=data["city"],
             state=data["state"],
-            posta_code=data["postal_code"],
+            postal_code=data["postal_code"],
             country=data["country"],
             coordinate=coordinate,
         )
