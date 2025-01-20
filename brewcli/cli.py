@@ -1,4 +1,5 @@
 import click
+from httpx import HTTPError
 
 from .brewery import random_brewery
 from .models import Brewery
@@ -18,9 +19,13 @@ def cli() -> None:
 @cli.command()
 @click.argument("number")
 def random(number):
-    breweries = [
-        Brewery.from_dict(brewery) for brewery in random_brewery(number=number)
-    ]
+    try:
+        breweries = [
+            Brewery.from_dict(brewery) for brewery in random_brewery(number=number)
+        ]
+    except HTTPError as exc:
+        click.echo(f"HTTP Exception for {exc.request.url} - {exc}")
+        return
 
     for result in breweries:
         click.echo(result)

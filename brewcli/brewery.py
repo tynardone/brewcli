@@ -8,5 +8,6 @@ def random_brewery(number: int = 1) -> Any:
 
     params = {"size": number}
     response = httpx.get(url=url, params=params)
+    response.raise_for_status()
 
     return response.json()
