@@ -1,7 +1,7 @@
 import click
 
-from brewery import random_brewery
-from models import Brewery
+from .brewery import random_brewery
+from .models import Brewery
 
 
 @click.group()
@@ -24,7 +24,3 @@ def random(number):
 
     for result in breweries:
         click.echo(result)
-
-
-if __name__ == "__main__":
-    cli()

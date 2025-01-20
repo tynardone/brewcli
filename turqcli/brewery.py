@@ -1,5 +1,6 @@
-import httpx
 from typing import Any
+
+import httpx
 
 
 def random_brewery(number: int = 1) -> Any:
