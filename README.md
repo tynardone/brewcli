@@ -2,7 +2,6 @@
 
 > A command-line interface (CLI) for exploring breweries via the [Open Brewery DB API](https://www.openbrewerydb.org/).
 
-![Build Status][build-status]
 ![Code Style: Ruff][ruff-style]
 ![Type Checked: Mypy][mypy-check]
 ![PyPI Version][pypi-version]
@@ -105,7 +104,6 @@ Contributions are welcome! To contribute:
 5. Open a pull request.
 
 <!-- Markdown link & img dfn's -->
-[build-status]: https://github.com/yourname/brewcli/actions/workflows/tests.yml/badge.svg
 [pypi-version]: https://img.shields.io/pypi/v/brewcli
 [python-versions]: https://img.shields.io/pypi/pyversions/brewcli
 [license]: https://img.shields.io/github/license/yourname/brewcli
