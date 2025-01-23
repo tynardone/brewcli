@@ -11,3 +11,7 @@ def random_brewery(number: int = 1) -> Any:
     response.raise_for_status()
 
     return response.json()
+
+
+def get_brewery() -> Any:
+    pass

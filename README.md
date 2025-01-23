@@ -4,7 +4,6 @@
 
 ![Code Style: Ruff][ruff-style]
 ![Type Checked: Mypy][mypy-check]
-![PyPI Version][pypi-version]
 ![Python Versions][python-versions]
 ![License][license]
 ![Downloads][downloads]
@@ -104,7 +103,6 @@ Contributions are welcome! To contribute:
 5. Open a pull request.
 
 <!-- Markdown link & img dfn's -->
-[pypi-version]: https://img.shields.io/pypi/v/brewcli
 [python-versions]: https://img.shields.io/pypi/pyversions/brewcli
 [license]: https://img.shields.io/github/license/yourname/brewcli
 [downloads]: https://img.shields.io/pypi/dm/brewcli

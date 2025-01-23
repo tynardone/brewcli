@@ -3,6 +3,7 @@ import pytest
 from brewcli.models import Address, Brewery, Coordinate
 
 
+# --- Fixtures ---
 @pytest.fixture
 def valid_coordinate_data():
     return {"longitude": "12.34", "latitude": "56.78"}
@@ -28,7 +29,7 @@ def valid_brewery_data(valid_address_data):
     return {
         "id": "brewery_1",
         "name": "Sample Brewery",
-        **valid_address_data,
+        "address": valid_address_data,
         "phone": "123-456-7890",
         "website_url": "http://samplebrewery.com",
     }
@@ -39,6 +40,11 @@ def test_coordinate_valid(valid_coordinate_data):
     coord = Coordinate(**valid_coordinate_data)
     assert coord.longitude == 12.34
     assert coord.latitude == 56.78
+
+
+def test_valid_coordinate():
+    coordinate = Coordinate(longitude=45.1234, latitude=-93.4567)
+    assert coordinate.to_str() == "-93.4567,45.1234"
 
 
 def test_coordinate_invalid():
