@@ -1,80 +1,114 @@
-
 # brewcli
 
-> Short blurb about what your product does.
+> A command-line interface (CLI) for exploring breweries via the [Open Brewery DB API](https://www.openbrewerydb.org/).
 
-[![NPM Version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
-[![Downloads Stats][npm-downloads]][npm-url]
+![Build Status][build-status]
+![Code Style: Ruff][ruff-style]
+![Type Checked: Mypy][mypy-check]
+![PyPI Version][pypi-version]
+![Python Versions][python-versions]
+![License][license]
+![Downloads][downloads]
 
-CLI For <https://www.openbrewerydb.org/>
+`brewcli` is a Python-based CLI tool designed to interact with the [Open Brewery DB API](https://www.openbrewerydb.org/). With `brewcli`, you can fetch random breweries, search breweries by city, state, or type, and more—all from the command line.
 
-![](header.png)
+## Features
+
+- Fetch a list of random breweries.
+- Search breweries by city, state, or brewery type.
+- Retrieve detailed information about a specific brewery.
+- Output data in a user-friendly format.
 
 ## Installation
 
-OS X & Linux:
+Install `brewcli` using pip:
 
 ```sh
-npm install my-crazy-module --save
-```
-
-Windows:
-
-```sh
-edit autoexec.bat
+pip install brewcli
 ```
 
 ## Usage example
 
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
+Here are some examples of how to use brewcli:
 
-_For more examples and usage, please refer to the [Wiki][wiki]._
+Get a Random Brewery
+
+```sh
+brewcli random
+```
+
+Search Breweries by City
+
+```sh
+brewcli search --city "Cincinnati"
+```
+
+Search Breweries by State and Type
+
+```sh
+brewcli search --state "California" --type "micro"
+```
+
+*For more examples and usage instructions, please refer to the documentation.*
 
 ## Development setup
 
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
+To set up a development environment for brewcli, follow these steps:
+
+Clone the repository:
 
 ```sh
-make install
-npm test
+git clone https://github.com/yourname/brewcli.git
+cd brewcli
+```
+
+Set up a virtual environment:
+
+```sh
+python -m venv venv
+source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+```
+
+Install dependencies:
+
+```sh
+pip install -r requirements.txt
+```
+
+Run tests:
+
+```sh
+pytest
 ```
 
 ## Release History
 
-* 0.2.1
-  * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-  * CHANGE: Remove `setDefaultXYZ()`
-  * ADD: Add `init()`
-* 0.1.1
-  * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-  * The first proper release
-  * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
-  * Work in progress
+- 0.0.1
+  - Work in progress
 
 ## Meta
 
-Tyler Nardone – <tynardone@gmail.com> - [LinkedIN](https://www.linkedin.com/in/tynardone/)
+Tyler Nardone – <tynardone@gmail.com> - [LinkedIn](https://www.linkedin.com/in/tynardone/)
 
 Distributed under the MIT license. See ``LICENSE`` for more information.
 
-[https://github.com/yourname/github-link](https://github.com/dbader/)
+[https://github.com/tynardone/brewcli](https://github.com/tynardone/brewcli)
 
 ## Contributing
 
-1. Fork it (<https://github.com/yourname/yourproject/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
+Contributions are welcome! To contribute:
+
+1. Fork the repository (<https://github.com/yourname/brewcli/fork>).
+2. Create a new feature branch (git checkout -b feature/fooBar).
+3. Commit your changes (git commit -am 'Add some fooBar').
+4. Push to the branch (git push origin feature/fooBar).
+5. Open a pull request.
 
 <!-- Markdown link & img dfn's -->
-[npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/datadog-metrics
-[npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
-[wiki]: https://github.com/yourname/yourproject/wiki
+[build-status]: https://github.com/yourname/brewcli/actions/workflows/tests.yml/badge.svg
+[pypi-version]: https://img.shields.io/pypi/v/brewcli
+[python-versions]: https://img.shields.io/pypi/pyversions/brewcli
+[license]: https://img.shields.io/github/license/yourname/brewcli
+[downloads]: https://img.shields.io/pypi/dm/brewcli
+[ruff-style]:https://img.shields.io/badge/code%20style-ruff-000000?style=flat&logo=python
+[mypy-check]:https://img.shields.io/badge/type%20checked-mypy-blue?style=flat&logo=python
