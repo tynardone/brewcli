@@ -1,9 +1,15 @@
+"""Module providing data objects"""
+
 from dataclasses import dataclass, field, fields
 from enum import Enum
 
 
 @dataclass
 class Coordinate:
+    """
+    Coordinate object in signed coordinate form
+    """
+
     longitude: float | None
     latitude: float | None
 
@@ -12,11 +18,21 @@ class Coordinate:
             value = getattr(self, f.name)
             if value is not None:
                 try:
-                    setattr(self, f.name, float(value))
-                except ValueError:
-                    raise ValueError(f"Cannot convert {f.name}={value!r} to float")
+                    value = float(value)
+                    setattr(self, f.name, value)
+                except ValueError as exc:
+                    raise ValueError(
+                        f"Cannot convert {f.name}={value!r} to float"
+                    ) from exc
+                if abs(value) > 180:
+                    raise ValueError(
+                        f"Coordinate value {f.name} must be within interval [-180, 180]"
+                    )
 
     def to_str(self) -> str:
+        """
+        Returns a string of format "<latitude>,<longitude>"
+        """
         if self.latitude is None or self.longitude is None:
             raise ValueError(
                 "Both latitude and longitude must be present to convert to a string."
@@ -26,6 +42,10 @@ class Coordinate:
 
 @dataclass
 class Address:
+    """
+    Brewery address
+    """
+
     address_one: str
     address_two: str | None
     address_three: str | None
@@ -37,10 +57,11 @@ class Address:
     coordinate: Coordinate | None
 
     @classmethod
-    def from_dict(cls, data: dict) -> "Address":
-        coordinate = Coordinate(
-            longitude=data.get("longitude"), latitude=data.get("latitude")
-        )
+    def from_dict(cls, data: dict):
+        """
+        Create and Address object from dictionary.
+        """
+        coordinate = Coordinate(longitude=data["longitude"], latitude=data["latitude"])
         return cls(
             address_one=data["address_1"],
             address_two=data["address_2"],
@@ -57,7 +78,7 @@ class Address:
 @dataclass
 class Brewery:
     """
-    Class for data recieved from API.
+    Class for brewery data recieved from API.
     """
 
     id: str
@@ -68,6 +89,9 @@ class Brewery:
 
     @classmethod
     def from_dict(cls, data: dict) -> "Brewery":
+        """
+        Create a Brewery object from a dictionary.
+        """
         address = Address.from_dict(data)
         return cls(
             id=data["id"],
@@ -79,6 +103,10 @@ class Brewery:
 
 
 class BreweryType(Enum):
+    """
+    Allowable options for brewery type.
+    """
+
     MICRO = "micro"
     NANO = "nano"
     REGIONAL = "regional"
@@ -114,7 +142,7 @@ class SearchQuery:
             )
         if self.page is not None and self.page < 1:
             raise ValueError("page must be 1 or greater")
-        if self.per_page is not None and not (1 <= self.per_page <= 200):
+        if self.per_page is not None and not 1 <= self.per_page <= 200:
             raise ValueError("per_page must be between 1 and 200")
 
     def to_params(self) -> dict:
