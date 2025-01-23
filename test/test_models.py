@@ -35,65 +35,66 @@ def valid_brewery_data(valid_address_data):
     }
 
 
-def test_coordinate_valid(valid_coordinate_data):
-    """Test creating a Coordinate with valid inputs."""
-    coord = Coordinate(**valid_coordinate_data)
-    assert coord.longitude == 12.34
-    assert coord.latitude == 56.78
+# --- Tests ---
 
 
-def test_valid_coordinate():
-    coordinate = Coordinate(longitude=45.1234, latitude=-93.4567)
-    assert coordinate.to_str() == "-93.4567,45.1234"
+class TestCoordinate:
+    def test_coordinate_valid(self, valid_coordinate_data):
+        """Test creating a Coordinate with valid inputs."""
+        coord = Coordinate(**valid_coordinate_data)
+        assert coord.longitude == 12.34
+        assert coord.latitude == 56.78
+
+    def test_valid_coordinate(self):
+        coordinate = Coordinate(longitude=45.1234, latitude=-93.4567)
+        assert coordinate.to_str() == "-93.4567,45.1234"
+
+    def test_coordinate_invalid(self):
+        """Test creating a Coordinate with invalid inputs."""
+        with pytest.raises(ValueError, match="Cannot convert longitude='abc' to float"):
+            Coordinate(longitude="abc", latitude="56.78")
+
+    def test_coordinate_none(self):
+        """Test creating a Coordinate with None values."""
+        coord = Coordinate(longitude=None, latitude=None)
+        assert coord.longitude is None
+        assert coord.latitude is None
 
 
-def test_coordinate_invalid():
-    """Test creating a Coordinate with invalid inputs."""
-    with pytest.raises(ValueError, match="Cannot convert longitude='abc' to float"):
-        Coordinate(longitude="abc", latitude="56.78")
+class TestAddress:
+    def test_address_from_dict_valid(self, valid_address_data):
+        """Test creating an Address from valid dictionary data."""
+        address = Address.from_dict(valid_address_data)
+        assert address.address_one == "123 Main St"
+        assert address.city == "Sample City"
+        assert address.state == "Sample State"
+        assert address.postal_code == "12345"
+        assert address.country == "Sample Country"
+        assert address.coordinate.longitude == 12.34
+        assert address.coordinate.latitude == 56.78
+
+    def test_address_from_dict_missing_fields(self, valid_address_data):
+        """Test creating an Address with missing fields."""
+        data = valid_address_data.copy()
+        del data["address_2"]  # Simulating missing field
+        with pytest.raises(KeyError, match="'address_2'"):
+            Address.from_dict(data)
 
 
-def test_coordinate_none():
-    """Test creating a Coordinate with None values."""
-    coord = Coordinate(longitude=None, latitude=None)
-    assert coord.longitude is None
-    assert coord.latitude is None
+class TestBrewery:
+    def test_brewery_from_dict_valid(self, valid_brewery_data):
+        """Test creating a Brewery from valid dictionary data."""
+        brewery = Brewery.from_dict(valid_brewery_data)
+        assert brewery.id == "brewery_1"
+        assert brewery.name == "Sample Brewery"
+        assert brewery.address.city == "Sample City"
+        assert brewery.address.coordinate.longitude == 12.34
+        assert brewery.phone == "123-456-7890"
+        assert brewery.website_url == "http://samplebrewery.com"
 
-
-def test_address_from_dict_valid(valid_address_data):
-    """Test creating an Address from valid dictionary data."""
-    address = Address.from_dict(valid_address_data)
-    assert address.address_one == "123 Main St"
-    assert address.city == "Sample City"
-    assert address.state == "Sample State"
-    assert address.postal_code == "12345"
-    assert address.country == "Sample Country"
-    assert address.coordinate.longitude == 12.34
-    assert address.coordinate.latitude == 56.78
-
-
-def test_address_from_dict_missing_fields(valid_address_data):
-    """Test creating an Address with missing fields."""
-    data = valid_address_data.copy()
-    del data["address_2"]  # Simulating missing field
-    with pytest.raises(KeyError, match="'address_2'"):
-        Address.from_dict(data)
-
-
-def test_brewery_from_dict_valid(valid_brewery_data):
-    """Test creating a Brewery from valid dictionary data."""
-    brewery = Brewery.from_dict(valid_brewery_data)
-    assert brewery.id == "brewery_1"
-    assert brewery.name == "Sample Brewery"
-    assert brewery.address.city == "Sample City"
-    assert brewery.address.coordinate.longitude == 12.34
-    assert brewery.phone == "123-456-7890"
-    assert brewery.website_url == "http://samplebrewery.com"
-
-
-def test_brewery_from_dict_missing_fields(valid_brewery_data):
-    """Test creating a Brewery with missing fields."""
-    data = valid_brewery_data.copy()
-    del data["phone"]  # Simulating missing field
-    with pytest.raises(KeyError):
-        Brewery.from_dict(data)
+    def test_brewery_from_dict_missing_fields(self, valid_brewery_data):
+        """Test creating a Brewery with missing fields."""
+        data = valid_brewery_data.copy()
+        del data["phone"]  # Simulating missing field
+        with pytest.raises(KeyError):
+            Brewery.from_dict(data)
