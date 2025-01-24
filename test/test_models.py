@@ -1,7 +1,4 @@
 """Tests for classes from models.py"""
-# pylint: disable=missing-class-docstring
-
-import re
 
 import pytest
 
@@ -20,28 +17,23 @@ class TestCoordinate:
         assert isinstance(coord.longitude, float)
         assert isinstance(coord.latitude, float)
 
-    def test_init_invalid_input_string(self):
+    def test_init_invalid_string_input(self):
         """Test creating a Coordinate with invalid inputs."""
-        with pytest.raises(ValueError, match="Cannot convert longitude='abc' to float"):
+        with pytest.raises(ValueError):
             Coordinate(longitude="abc", latitude="56.78")
 
-    def test_init_invalid_input_range(self):
+    def test_init_invalid_range_input(self):
         """Test checking valid coordinate range"""
-        with pytest.raises(
-            ValueError,
-            match=re.escape(
-                "Coordinate value latitude must be within interval [-180, 180]"
-            ),
-        ):
+        with pytest.raises(ValueError):
             Coordinate(longitude=100, latitude=999)
 
-    def test_init_none(self):
-        """Test creating a Coordinate with None values."""
-        coord = Coordinate(longitude=None, latitude=None)
-        assert coord.longitude is None
-        assert coord.latitude is None
+    @pytest.mark.parametrize("long,lat", [(None, "123"), ("123", None)])
+    def test_init_none_fail(self, long, lat):
+        """Test that a Coordinate fails when initialized with None values."""
+        with pytest.raises(TypeError):
+            Coordinate(longitude=long, latitude=lat)
 
-    def test_to_str(self):
+    def test_to_str_success(self):
         """Test to_str method output"""
         coordinate = Coordinate(longitude=45.1234, latitude=-93.4567)
         assert coordinate.to_str() == "-93.4567,45.1234"

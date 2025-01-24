@@ -7,27 +7,24 @@ from enum import Enum
 @dataclass
 class Coordinate:
     """
-    Coordinate object in signed coordinate form
+    Coordinate object in signed coordinate form.
     """
 
-    longitude: float | None
-    latitude: float | None
+    latitude: float
+    longitude: float
 
     def __post_init__(self):
         for f in fields(self):
             value = getattr(self, f.name)
-            if value is not None:
-                try:
-                    value = float(value)
-                    setattr(self, f.name, value)
-                except ValueError as exc:
-                    raise ValueError(
-                        f"Cannot convert {f.name}={value!r} to float"
-                    ) from exc
-                if abs(value) > 180:
-                    raise ValueError(
-                        f"Coordinate value {f.name} must be within interval [-180, 180]"
-                    )
+            try:
+                value = float(value)
+                setattr(self, f.name, value)
+            except ValueError as exc:
+                raise ValueError(f"Cannot convert {f.name}={value!r} to float") from exc
+            if abs(value) > 180:
+                raise ValueError(
+                    "Coordinate values must be within interval [-180, 180]"
+                )
 
     def to_str(self) -> str:
         """
@@ -61,7 +58,12 @@ class Address:
         """
         Create and Address object from dictionary.
         """
-        coordinate = Coordinate(longitude=data["longitude"], latitude=data["latitude"])
+        try:
+            coordinate = Coordinate(
+                longitude=data["longitude"], latitude=data["latitude"]
+            )
+        except (ValueError, TypeError):
+            coordinate = None
         return cls(
             address_one=data["address_1"],
             address_two=data["address_2"],
