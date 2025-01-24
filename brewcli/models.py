@@ -24,11 +24,6 @@ class Coordinate:
         ValueError: If the latitude or longitude is not convertible to a float or is
                     out of the valid range.
         TypeError: If the latitude or longitude is of type `None`.
-
-    Example:
-        >>> coord = Coordinate(latitude=45.0, longitude=-93.0)
-        >>> coord.to_str()
-        '45.0,-93.0'
     """
 
     latitude: float
@@ -51,7 +46,15 @@ class Coordinate:
 
     def to_str(self) -> str:
         """
-        Returns a string of format "<latitude>,<longitude>"
+        Returns a string representation of the coordinate.
+
+        Returns:
+            str: A string in the format "<latitude>,<longitude>".
+
+        Example:
+            >>> coord = Coordinate(latitude=45.0, longitude=-93.0)
+            >>> coord.to_str()
+            '45.0,-93.0'
         """
         return f"{self.latitude},{self.longitude}"
 
@@ -59,12 +62,31 @@ class Coordinate:
 @dataclass
 class Address:
     """
-    Brewery address
+    Represents a physical address and its associated geographic coordinate.
+
+    This class contains attributes to define a complete address and an optional
+    geographic coordinate (latitude and longitude).
+
+    Attributes:
+        address_one (str): The primary address line.
+        address_two (str | None): The secondary address line, if any.
+        address_three (str | None): The tertiary address line, if any.
+        street (str): The street name.
+        city (str): The city where the address is located.
+        state (str): The state or province of the address.
+        postal_code (str): The postal or ZIP code.
+        country (str): The country of the address.
+        coordinate (Coordinate | None): The geographic coordinate of the address,
+            represented as a `Coordinate` object. Can be `None` if not provided.
+
+    Methods:
+        from_dict(data: dict) -> Address:
+            Creates an `Address` object from a dictionary of attributes.
     """
 
     address_one: str
-    address_two: str
-    address_three: str
+    address_two: str | None
+    address_three: str | None
     street: str
     city: str
     state: str
@@ -100,7 +122,21 @@ class Address:
 @dataclass
 class Brewery:
     """
-    Class for brewery data recieved from API.
+    Represents a brewery and its associated details.
+
+    This class encapsulates information about a brewery, including its ID, name,
+    address, contact details, and website URL.
+
+    Attributes:
+        id (str): The unique identifier of the brewery.
+        name (str): The name of the brewery.
+        address (Address): The address of the brewery, represented as an `Address` object.
+        phone (str): The phone number of the brewery.
+        website_url (str): The website URL of the brewery.
+
+    Methods:
+        from_dict(data: dict) -> Brewery:
+            Creates a `Brewery` object from a dictionary of attributes.
     """
 
     id: str
@@ -112,7 +148,42 @@ class Brewery:
     @classmethod
     def from_dict(cls, data: dict) -> "Brewery":
         """
-        Create a Brewery object from a dictionary.
+        Creates a `Brewery` object from a dictionary.
+
+        Args:
+            data (dict): A dictionary containing the brewery data. Expected keys include:
+                - "id" (str): The brewery's unique identifier.
+                - "name" (str): The brewery's name.
+                - "address_1", "address_2", "address_3", "street", "city", "state",
+                    "postal_code", "country" (various): Address details passed to `Address.from_dict`.
+                - "latitude", "longitude" (float): Geographic coordinates of the brewery.
+                - "phone" (str): The brewery's phone number.
+                - "website_url" (str): The brewery's website URL.
+
+        Returns:
+            Brewery: An instance of the `Brewery` class.
+
+        Raises:
+            KeyError: If required fields are missing in the input data.
+            TypeError: If the input data is not a dictionary or contains incorrect types.
+
+        Example:
+            >>> data = {
+            ...     "id": "b54b16e1-ac3b-4bff-a11f-f7ae9ddc27e0",
+            ...     "name": "MadTree Brewing 2.0",
+            ...     "address_1": "5164 Kennedy Ave",
+            ...     "city": "Cincinnati",
+            ...     "state": "Ohio",
+            ...     "postal_code": "45213",
+            ...     "country": "United States",
+            ...     "latitude": 39.1885752,
+            ...     "longitude": -84.4137736,
+            ...     "phone": "5138368733",
+            ...     "website_url": "http://www.madtreebrewing.com",
+            ... }
+            >>> brewery = Brewery.from_dict(data)
+            >>> brewery.phones
+            '5138368733'
         """
         address = Address.from_dict(data)
         return cls(
@@ -125,10 +196,6 @@ class Brewery:
 
 
 class BreweryType(Enum):
-    """
-    Allowable options for brewery type.
-    """
-
     MICRO = "micro"
     NANO = "nano"
     REGIONAL = "regional"
