@@ -85,14 +85,14 @@ class Address:
     """
 
     address_one: str
-    address_two: str | None
-    address_three: str | None
     street: str
     city: str
     state: str
     postal_code: str
     country: str
-    coordinate: Coordinate | None
+    address_two: str | None = None
+    address_three: str | None = None
+    coordinate: Coordinate | None = None
 
     @classmethod
     def from_dict(cls, data: dict):
