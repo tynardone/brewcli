@@ -33,7 +33,7 @@ class TestCoordinate:
         with pytest.raises(TypeError):
             Coordinate(longitude=long, latitude=lat)
 
-    def test_to_str_success(self):
+    def test_to_str(self):
         """Test to_str method output"""
         coordinate = Coordinate(longitude=45.1234, latitude=-93.4567)
         assert coordinate.to_str() == "-93.4567,45.1234"

@@ -30,10 +30,6 @@ class Coordinate:
         """
         Returns a string of format "<latitude>,<longitude>"
         """
-        if self.latitude is None or self.longitude is None:
-            raise ValueError(
-                "Both latitude and longitude must be present to convert to a string."
-            )
         return f"{self.latitude},{self.longitude}"
 
 
