@@ -7,7 +7,28 @@ from enum import Enum
 @dataclass
 class Coordinate:
     """
-    Coordinate object in signed coordinate form.
+    Represents a geographic coordinate with latitude and longitude values.
+
+    This class ensures that both latitude and longitude values are float-compatible and
+    within the valid range of -180 to 180.
+
+    Attributes:
+        latitude (float): The latitude of the coordinate, a float value in the range [-180, 180].
+        longitude (float): The longitude of the coordinate, a float value in the range [-180, 180].
+
+    Methods:
+        to_str() -> str: Returns a string representation of the coordinate in the
+        format "<latitude>,<longitude>".
+
+    Raises:
+        ValueError: If the latitude or longitude is not convertible to a float or is
+                    out of the valid range.
+        TypeError: If the latitude or longitude is of type `None`.
+
+    Example:
+        >>> coord = Coordinate(latitude=45.0, longitude=-93.0)
+        >>> coord.to_str()
+        '45.0,-93.0'
     """
 
     latitude: float
@@ -21,6 +42,8 @@ class Coordinate:
                 setattr(self, f.name, value)
             except ValueError as exc:
                 raise ValueError(f"Cannot convert {f.name}={value!r} to float") from exc
+            except TypeError as exc:
+                raise TypeError(f"Cannot accept NoneType {f.name}={value!r}") from exc
             if abs(value) > 180:
                 raise ValueError(
                     "Coordinate values must be within interval [-180, 180]"
@@ -40,8 +63,8 @@ class Address:
     """
 
     address_one: str
-    address_two: str | None
-    address_three: str | None
+    address_two: str
+    address_three: str
     street: str
     city: str
     state: str
@@ -58,7 +81,8 @@ class Address:
             coordinate = Coordinate(
                 longitude=data["longitude"], latitude=data["latitude"]
             )
-        except (ValueError, TypeError):
+        except (ValueError, KeyError, TypeError) as exc:
+            print(f"Error: {exc}")
             coordinate = None
         return cls(
             address_one=data["address_1"],

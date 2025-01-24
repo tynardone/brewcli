@@ -40,7 +40,7 @@ class TestCoordinate:
 
 
 class TestAddress:
-    def test_from_dict_valid(self, valid_brewery_response):
+    def test_from_dict_full(self, valid_brewery_response):
         """Test creating an Address from valid dictionary data."""
         address = Address.from_dict(valid_brewery_response)
         assert address.address_one == "123 Main St"
@@ -52,6 +52,38 @@ class TestAddress:
         assert address.country == "Sample Country"
         assert address.coordinate.longitude == 123.123
         assert address.coordinate.latitude == -123.123
+
+    def test_from_dict_optional_none(self, valid_brewery_response):
+        """Test creating Address without optional parameters."""
+        valid_brewery_response["address_2"] = None
+        valid_brewery_response["address_3"] = None
+        valid_brewery_response["longitude"] = None
+        valid_brewery_response["latitude"] = None
+
+        address = Address.from_dict(valid_brewery_response)
+
+        assert address.address_one == "123 Main St"
+        assert address.city == "Sample City"
+        assert address.address_two is None
+        assert address.address_three is None
+        assert address.state == "Sample State"
+        assert address.postal_code == "12345"
+        assert address.country == "Sample Country"
+        assert address.coordinate is None
+
+    @pytest.mark.parametrize(
+        "lat,long",
+        [
+            ("abc", "100"),
+            ("100", "abc"),
+        ],
+    )
+    def test_from_dict_bad_coordinates(self, lat, long, valid_brewery_response):
+        """Test Address is created with Coordinate None if bad latitude or longitude supplied."""
+        valid_brewery_response["latitude"] = lat
+        valid_brewery_response["longitude"] = long
+        address = Address.from_dict(valid_brewery_response)
+        assert address.coordinate is None
 
 
 class TestBrewery:
