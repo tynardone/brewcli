@@ -104,3 +104,7 @@ class TestBrewery:
         del data["phone"]  # Simulating missing field
         with pytest.raises(KeyError):
             Brewery.from_dict(data)
+
+
+class TestQuerySet:
+    pass

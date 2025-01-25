@@ -155,7 +155,7 @@ class Brewery:
                 - "id" (str): The brewery's unique identifier.
                 - "name" (str): The brewery's name.
                 - "address_1", "address_2", "address_3", "street", "city", "state",
-                    "postal_code", "country" (various): Address details passed to `Address.from_dict`.
+                    "postal_code", "country": Address details passed to `Address.from_dict`.
                 - "latitude", "longitude" (float): Geographic coordinates of the brewery.
                 - "phone" (str): The brewery's phone number.
                 - "website_url" (str): The brewery's website URL.
