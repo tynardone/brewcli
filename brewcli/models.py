@@ -1,6 +1,6 @@
 """Module providing data objects"""
 
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, fields
 from enum import Enum
 
 
@@ -209,18 +209,43 @@ class BreweryType(Enum):
 @dataclass
 class SearchQuery:
     """
-    Class for capturing and validating search parameters from users.
+    Represents a set of search parameters for querying the OD Brewery API in a form it excpects.
+
+    This class captures user input, validates certain parameters, and provides
+    a method to convert the data into a dictionary suitable for use as query
+    parameters in API requests.
+
+    Attributes:
+        by_city (str | None): The city to filter the search results by.
+        by_country (str | None): The country to filter the search results by.
+        by_dist (str | None): A string representing distance in the format
+            "latitude,longitude".
+        by_name (str | None): The name of the brewery to search for.
+        by_state (str | None): The state to filter the search results by.
+        by_postal (str | None): The postal code to filter the search results by.
+        by_type (BreweryType | None): The type of brewery to filter results by.
+        sort_order (str | None): The sorting order for the results, either 'asc' or 'desc'.
+        by_ids (list[str] | None): A list of brewery IDs to filter the search results by.
+        page (int | None): The page number for paginated results. Defaults to 1.
+        per_page (int | None): The number of results per page. Defaults to 50, with
+            a maximum value of 200.
+
+    Methods:
+        __post_init__(): Validates the parameters, ensuring sort_order is either
+            'asc' or 'desc', page is 1 or greater, and per_page is between 1 and 200.
+        to_params() -> dict: Converts the dataclass fields into a dictionary of
+            query parameters, excluding any fields with a value of `None`.
     """
 
-    by_city: str | None
-    by_country: str | None
-    by_dist: str | None  # Format: "latitude,longitude"
-    by_name: str | None
-    by_state: str | None
-    by_postal: str | None
-    by_type: BreweryType | None
-    sort_order: str | None
-    by_ids: list[str] | None = field(default_factory=list)
+    by_city: str | None = None
+    by_country: str | None = None
+    by_dist: str | None = None  # Format: "latitude,longitude"
+    by_name: str | None = None
+    by_state: str | None = None
+    by_postal: str | None = None
+    by_type: BreweryType | None = None
+    sort_order: str | None = None
+    by_ids: list[str] | None = None
     page: int | None = 1
     per_page: int | None = 50  # Default 50, max 200
 
