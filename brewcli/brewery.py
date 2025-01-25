@@ -4,68 +4,87 @@ from typing import Any
 
 import httpx
 
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
-    ),
-    "Accept": (
-        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
-        "image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
-    ),
-    "Accept-Language": "en-US,en;q=0.9",
-    "Accept-Encoding": "gzip, deflate, br",
-}
 
-
-def random_brewery(number: int = 1) -> Any:
+class BreweryAPI:
     """
-    Fetches a specified number of random breweries from the Open Brewery DB API.
+    A class to interact with the Open Brewery DB API using httpx.
 
-    Args:
-        number (int): The number of random brewery results to return. Defaults to 1.
-
-    Returns:
-        list[dict]: A list of dictionaries, where each dictionary contains details
-        about a brewery. Each dictionary has the following structure:
-
-        {
-            "id": str,
-            "name": str,
-            "brewery_type": str,
-            "address_1": str,
-            "address_2": str | None,
-            "address_3": str | None,
-            "city": str,
-            "state_province": str,
-            "postal_code": str,
-            "country": str,
-            "longitude": str,
-            "latitude": str,
-            "phone": str,
-            "website_url": str,
-            "state": str,
-            "street": str
-        }
-
-    Raises:
-        httpx.HTTPError: If the HTTP request to the Open Brewery DB API fails.
-        ValueError: If the response from the API cannot be parsed as JSON.
+    This class provides methods to perform API requests, such as fetching
+    random breweries and getting details for a specific brewery by ID.
     """
 
-    url = "https://api.openbrewerydb.org/v1/breweries/random"
+    BASE_URL = "https://api.openbrewerydb.org/v1/breweries"
+    HEADERS = {
+        "User-Agent": (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+        ),
+        "Accept": (
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
+            "image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+        ),
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+    }
 
-    params = {"size": number}
-    response = httpx.get(url=url, params=params)
-    response.raise_for_status()
+    def __init__(self, base_url: str = BASE_URL):
+        """
+        Initializes the BreweryAPI object with the base URL.
 
-    return response.json()
+        Args:
+            base_url (str): The base URL for the API. Defaults to Open Brewery DB URL.
+        """
+        self.base_url = base_url
+        self.client = httpx.Client(headers=self.HEADERS)
 
+    def _handle_request(self, endpoint: str, params: dict | None = None) -> Any:
+        """
+        Internal method to handle GET requests to the API.
 
-def get_brewery() -> Any:
-    pass
+        Args:
+            endpoint (str): The API endpoint to call.
+            params (dict): Any query parameters to include in the request.
 
+        Returns:
+            Any: The JSON response from the API.
 
-def get_single_brewery(id: int):
-    """Fetch a single brewery by id."""
-    pass
+        Raises:
+            httpx.HTTPError: If the request fails.
+            ValueError: If the response cannot be parsed as JSON.
+        """
+        url = f"{self.base_url}/{endpoint}"
+
+        try:
+            response = self.client.get(url, params=params)
+            response.raise_for_status()
+        except httpx.HTTPError as exc:
+            print(f"Error while requesting {exc.request.url!r}.")  # pylint: disable=no-member
+
+        try:
+            return response.json()
+        except ValueError as exc:
+            raise ValueError(f"Failed to parse response from {url}") from exc
+
+    def get_random_breweries(self, number: int = 1) -> Any:
+        """
+        Fetches a specified number of random breweries from the Open Brewery DB API.
+
+        Args:
+            number (int): The number of random brewery results to return. Defaults to 1.
+
+        Returns:
+            list[dict]: A list of brewery details as dictionaries.
+        """
+        return self._handle_request("random", {"size": number})
+
+    def get_brewery_by_id(self, brewery_id: str) -> Any:
+        """
+        Fetches a single brewery by its ID.
+
+        Args:
+            brewery_id (str): The ID of the brewery to fetch.
+
+        Returns:
+            dict: The brewery details.
+        """
+        return self._handle_request(brewery_id)
