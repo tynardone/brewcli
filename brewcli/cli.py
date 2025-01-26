@@ -1,8 +1,10 @@
 import click
 from httpx import HTTPError
 
-from .brewery import random_brewery
+from .brewery import BreweryAPI
 from .models import Brewery
+
+brewery_client = BreweryAPI()
 
 
 @click.group()
@@ -13,15 +15,21 @@ def cli() -> None:
 
     Provide a number specifying how many results you would like!
     """
-    pass
 
 
 @cli.command()
 @click.argument("number")
 def random(number):
+    """
+    Retrieve a random set of breweries
+
+    Args:
+        number (int):
+    """
     try:
         breweries = [
-            Brewery.from_dict(brewery) for brewery in random_brewery(number=number)
+            Brewery.from_dict(brewery)
+            for brewery in brewery_client.get_random_breweries(number=number)
         ]
     except HTTPError as exc:
         click.echo(f"HTTP Exception for {exc.request.url} - {exc}")
