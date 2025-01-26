@@ -13,8 +13,10 @@ class Coordinate:
     within the valid range of -180 to 180.
 
     Attributes:
-        latitude (float): The latitude of the coordinate, a float value in the range [-180, 180].
-        longitude (float): The longitude of the coordinate, a float value in the range [-180, 180].
+        latitude (float): The latitude of the coordinate,
+            a float value in the range [-180, 180].
+        longitude (float): The longitude of the coordinate,
+            a float value in the range [-180, 180].
 
     Methods:
         to_str() -> str: Returns a string representation of the coordinate in the
@@ -130,7 +132,8 @@ class Brewery:
     Attributes:
         id (str): The unique identifier of the brewery.
         name (str): The name of the brewery.
-        address (Address): The address of the brewery, represented as an `Address` object.
+        address (Address): The address of the brewery, represented as an `Address`
+            object.
         phone (str): The phone number of the brewery.
         website_url (str): The website URL of the brewery.
 
@@ -151,12 +154,15 @@ class Brewery:
         Creates a `Brewery` object from a dictionary.
 
         Args:
-            data (dict): A dictionary containing the brewery data. Expected keys include:
+            data (dict): A dictionary containing the brewery data. Expected
+            keys include:
                 - "id" (str): The brewery's unique identifier.
                 - "name" (str): The brewery's name.
                 - "address_1", "address_2", "address_3", "street", "city", "state",
-                    "postal_code", "country": Address details passed to `Address.from_dict`.
-                - "latitude", "longitude" (float): Geographic coordinates of the brewery.
+                    "postal_code", "country": Address details passed to `
+                    Address.from_dict`.
+                - "latitude", "longitude" (float): Geographic coordinates
+                     of the brewery.
                 - "phone" (str): The brewery's phone number.
                 - "website_url" (str): The brewery's website URL.
 
@@ -165,7 +171,8 @@ class Brewery:
 
         Raises:
             KeyError: If required fields are missing in the input data.
-            TypeError: If the input data is not a dictionary or contains incorrect types.
+            TypeError: If the input data is not a dictionary or contains i
+            ncorrect types.
 
         Example:
             >>> data = {
@@ -209,7 +216,8 @@ class BreweryType(Enum):
 @dataclass
 class SearchQuery:
     """
-    Represents a set of search parameters for querying the OD Brewery API in a form it excpects.
+    Represents a set of search parameters for querying the OD Brewery API
+    in a form it excpects.
 
     This class captures user input, validates certain parameters, and provides
     a method to convert the data into a dictionary suitable for use as query
@@ -224,8 +232,10 @@ class SearchQuery:
         by_state (str | None): The state to filter the search results by.
         by_postal (str | None): The postal code to filter the search results by.
         by_type (BreweryType | None): The type of brewery to filter results by.
-        sort_order (str | None): The sorting order for the results, either 'asc' or 'desc'.
-        by_ids (list[str] | None): A list of brewery IDs to filter the search results by.
+        sort_order (str | None): The sorting order for the results,
+            either 'asc' or 'desc'.
+        by_ids (list[str] | None): A list of brewery IDs to filter the search
+            results by.
         page (int | None): The page number for paginated results. Defaults to 1.
         per_page (int | None): The number of results per page. Defaults to 50, with
             a maximum value of 200.
