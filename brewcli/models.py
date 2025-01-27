@@ -253,7 +253,7 @@ class SearchQuery:
     by_name: str | None = None
     by_state: str | None = None
     by_postal: str | None = None
-    by_type: BreweryType | None = None
+    by_type: str | None = None
     sort_order: str | None = None
     by_ids: list[str] | None = None
     page: int | None = 1
@@ -262,16 +262,25 @@ class SearchQuery:
     def __post_init__(self):
         if self.sort_order is not None and self.sort_order not in ["asc", "desc"]:
             raise ValueError(
-                f"Invalid sort_order '{self.sort_order}'. Must be 'asc' or 'desc'."
+                f"Invalid sort_order '{self.sort_order}'. Must be 'asc', 'desc', "
+                "or None."
             )
-        if self.page is not None and self.page < 1:
-            raise ValueError("page must be 1 or greater")
-        if self.per_page is not None and not 1 <= self.per_page <= 200:
-            raise ValueError("per_page must be between 1 and 200")
-        if self.by_type not in BreweryType:
+        if self.page is not None:
+            if not isinstance(self.page, int) or self.page < 1:
+                raise ValueError(
+                    f"Invalid page: {self.page}. Must be an integer greater than "
+                    "or equal to 1."
+                )
+        if self.per_page is not None:
+            if not isinstance(self.per_page, int) or not 1 <= self.per_page <= 200:
+                raise ValueError(
+                    f"Invalid per_page: {self.per_page}. Must be an integer "
+                    "from 1 to 200."
+                )
+        if self.by_type is not None and self.by_type not in BreweryType:
             raise ValueError(
                 f"Invalid value for by_type: {self.by_type}. Must be one of "
-                "{','.join(t.value for t in BreweryType])}",
+                f"{', '.join([t.value for t in BreweryType])}",
             )
 
     def to_params(self) -> dict:
@@ -286,8 +295,7 @@ class SearchQuery:
             "by_name": self.by_name,
             "by_state": self.by_state,
             "by_postal": self.by_postal,
-            "by_type": self.by_type.value if self.by_type else None,
-            "page": self.page,
+            "by_type": self.by_type,
             "per_page": self.per_page,
             "sort_order": self.sort_order,
         }

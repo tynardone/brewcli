@@ -2,7 +2,7 @@
 
 import pytest
 
-from brewcli.models import Address, Brewery, Coordinate
+from brewcli.models import Address, Brewery, BreweryType, Coordinate, SearchQuery
 
 
 class TestCoordinate:
@@ -160,31 +160,132 @@ class TestBrewery:
         # Assert that coordinate is None
         assert brewery.address.coordinate is None
 
-    def test_sort_order_validation(self):
-        # TODO: implement
-        pass
 
-    def test_page_validation(self):
-        # TODO: implement
-        pass
+class TestSearchQuery:
+    def test_init_all_fields(self, valid_query_set):
+        """Test initialization of SearchQuery from valid data where all fields
+        are present."""
+        query_set = SearchQuery(**valid_query_set)
+        assert query_set.by_city == "Grand Rapids"
+        assert query_set.by_country == "USA"
+        assert query_set.by_dist == "100,100"
+        assert query_set.by_name == "Brewery"
+        assert query_set.by_state == "Michigan"
+        assert query_set.by_postal == "11111"
+        assert query_set.sort_order == "asc"
+        assert query_set.by_ids == ["123", "456", "789"]
+        assert query_set.page == 2
+        assert query_set.per_page == 100
 
-    def test_per_page_validation(self):
-        # TODO: implement
-        pass
+    def test_init_defaults(self):
+        """
+        Test for expected default parameters.
+        """
+        query_set = SearchQuery()
+        assert query_set.by_city is None
+        assert query_set.by_country is None
+        assert query_set.by_dist is None
+        assert query_set.by_name is None
+        assert query_set.by_state is None
+        assert query_set.by_postal is None
+        assert query_set.sort_order is None
+        assert query_set.by_ids is None
+        assert query_set.page == 1
+        assert query_set.per_page == 50
 
-    def test_by_type_validation(self):
-        # TODO: implement
-        pass
+    @pytest.mark.parametrize("sort", ["asc", "desc", None])
+    def test_sort_order_validation_valid(self, sort):
+        """
+        Test successful creation when sort_order is valid option of 'asc', 'desc',
+        or None
+        """
+        query_set = SearchQuery(sort_order=sort)
+        assert query_set.sort_order == sort
+
+    @pytest.mark.parametrize("sort", ["ascending", "descending", 1])
+    def test_sort_order_validation_invalid(self, sort):
+        """Test that a ValueError is raised when sort_order is not 'asc' or 'desc'."""
+        with pytest.raises(
+            ValueError,
+            match=f"Invalid sort_order '{sort}'. Must be 'asc', 'desc', or None.",
+        ):
+            SearchQuery(sort_order=sort)
+
+    @pytest.mark.parametrize("per_page", [1, 50, 200, None])
+    def test_per_page_validation_valid(self, per_page):
+        """
+        Test that `per_page` accepts valid values within range 1 to 200, or None.
+        """
+        query_set = SearchQuery(per_page=per_page)
+        if per_page:
+            assert query_set.per_page == per_page
+        else:
+            assert query_set.per_page is None
+
+    @pytest.mark.parametrize("per_page", [-10, 0, 201, 12.5, "invalid"])
+    def test_per_page_validation_invalid(self, per_page):
+        """
+        Test that `per_page` raises exception with invalid arguments:
+         - Outside of range [1, 200]
+         - float e.g 12.5
+         - str
+        """
+        with pytest.raises(
+            ValueError,
+            match=f"Invalid per_page: {per_page}. Must be an integer from 1 to 200.",
+        ):
+            SearchQuery(per_page=per_page)
+
+    @pytest.mark.parametrize("page", [1, 10, 100, None])
+    def test_page_validation_valid(self, page):
+        """
+        Test that `page` accepts vaild values of integers equal to or greater than 1,
+        or None.
+        """
+        query_set = SearchQuery(page=page)
+        if page:
+            assert query_set.page == page
+        else:
+            assert query_set.page is None
+
+    @pytest.mark.parametrize("page", [0, -10, 12.5, "invalid"])
+    def test_page_validation_invalid(self, page):
+        """
+        Test that an exception is raised with invalid  `page` arguments:
+        - Outside range
+        - float
+        - str
+        """
+        with pytest.raises(
+            ValueError,
+            match=f"Invalid page: {page}. Must be an integer greater "
+            "than or equal to 1.",
+        ):
+            SearchQuery(page=page)
+
+    @pytest.mark.parametrize("brew_type", [t.value for t in BreweryType] + [None])
+    def test_by_type_validation(self, brew_type):
+        """
+        Test by_type validation works for all members of BreweryType enum.
+        """
+        query_set = SearchQuery(by_type=brew_type)
+        assert query_set.by_type == brew_type
+
+    @pytest.mark.parametrize("brew_type", ["Micro", "invalid", 100, ""])
+    def test_by_type_validation_invalid(self, brew_type: str):
+        """
+        Test that an exception is raised with invalid `by_type` arguments, to
+        ensure only excepts options defined in BreweryType.
+        """
+        with pytest.raises(
+            ValueError,
+            match=f"Invalid value for by_type: {brew_type}. Must be one of "
+            f"{', '.join([t.value for t in BreweryType])}",
+        ):
+            SearchQuery(
+                by_type=brew_type,
+            )
 
     def test_to_params(self):
         # TODO: implement
         pass
-
-    def test_defaults(self):
-        # TODO: implement
-        pass
-
-
-class TestQuerySet:
-    # TODO: implement queryset tests
-    pass
