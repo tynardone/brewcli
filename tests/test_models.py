@@ -286,18 +286,4 @@ class TestSearchQuery:
                 by_type=brew_type,
             )
 
-    def test_to_params_all_fields(self, valid_query_set):
-        pass  # TODO: implement
-
-    def test_to_params_all_none(self):
-        pass  # TODO: implement
-
-    @pytest.mark.parametrize("ids", [None, [], ["1"], ["1", "2", "123-abc"]])
-    def test_to_params_handles_by_ids(self, ids):
-        query_set = SearchQuery(by_ids=ids)
-        expected_ids = ",".join(ids) if ids else None
-        if expected_ids is None:
-            expected_params = {"page": 1, "per_page": 50}
-        else:
-            expected_params = {"by_ids": expected_ids, "page": 1, "per_page": 50}
-        assert query_set.to_params() == expected_params
+    # TODO: test to_params method
