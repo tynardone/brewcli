@@ -160,20 +160,31 @@ class TestBrewery:
         # Assert that coordinate is None
         assert brewery.address.coordinate is None
 
-    # Test sort_order validation
+    def test_sort_order_validation(self):
+        # TODO: implement
+        pass
 
-    # Test page validation
+    def test_page_validation(self):
+        # TODO: implement
+        pass
 
-    # Test per_page validation
+    def test_per_page_validation(self):
+        # TODO: implement
+        pass
 
-    # Test by_type validation with BreweryType
+    def test_by_type_validation(self):
+        # TODO: implement
+        pass
 
-    # Test to_params
+    def test_to_params(self):
+        # TODO: implement
+        pass
 
-    # Test defaults
-
-    #
+    def test_defaults(self):
+        # TODO: implement
+        pass
 
 
 class TestQuerySet:
+    # TODO: implement queryset tests
     pass
