@@ -249,7 +249,9 @@ class SearchQuery:
 
     by_city: str | None = None
     by_country: str | None = None
-    by_dist: str | None = None  # Format: "latitude,longitude"
+    by_dist: str | None = (
+        None  # Format: "latitude,longitude" #TODO: replace this with a Coordinate obect
+    )
     by_name: str | None = None
     by_state: str | None = None
     by_postal: str | None = None
@@ -296,6 +298,7 @@ class SearchQuery:
             "by_state": self.by_state,
             "by_postal": self.by_postal,
             "by_type": self.by_type,
+            "page": self.page,
             "per_page": self.per_page,
             "sort_order": self.sort_order,
         }
