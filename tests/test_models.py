@@ -146,12 +146,33 @@ class TestBrewery:
         assert brewery.phone == "123-456-7890"
         assert brewery.website_url == "http://samplebrewery.com"
 
-    def test_brewery_from_dict_missing_fields(self, valid_brewery_response):
-        """Test creating a Brewery with missing fields."""
-        data = valid_brewery_response.copy()
-        del data["phone"]  # Simulating missing field
-        with pytest.raises(KeyError):
-            Brewery.from_dict(data)
+    def test_brewery_from_dict_invalid_coordinates(self, valid_brewery_response):
+        """
+        Test that coordinate is None if invalid latitude or longitude are supplied.
+        """
+        # Update valid_brewery_response with invalid coordinates
+        valid_brewery_response["latitude"] = "invalid_latitude"
+        valid_brewery_response["longitude"] = "invalid_longitude"
+
+        # Create the Brewery object
+        brewery = Brewery.from_dict(valid_brewery_response)
+
+        # Assert that coordinate is None
+        assert brewery.address.coordinate is None
+
+    # Test sort_order validation
+
+    # Test page validation
+
+    # Test per_page validation
+
+    # Test by_type validation with BreweryType
+
+    # Test to_params
+
+    # Test defaults
+
+    #
 
 
 class TestQuerySet:

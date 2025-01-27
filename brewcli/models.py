@@ -217,7 +217,7 @@ class BreweryType(Enum):
 class SearchQuery:
     """
     Represents a set of search parameters for querying the OD Brewery API
-    in a form it excpects.
+    in a form it excpects.c
 
     This class captures user input, validates certain parameters, and provides
     a method to convert the data into a dictionary suitable for use as query
@@ -268,6 +268,11 @@ class SearchQuery:
             raise ValueError("page must be 1 or greater")
         if self.per_page is not None and not 1 <= self.per_page <= 200:
             raise ValueError("per_page must be between 1 and 200")
+        if self.by_type not in BreweryType:
+            raise ValueError(
+                f"Invalid value for by_type: {self.by_type}. Must be one of "
+                "{','.join(t.value for t in BreweryType])}",
+            )
 
     def to_params(self) -> dict:
         """
