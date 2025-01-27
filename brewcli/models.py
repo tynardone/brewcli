@@ -249,9 +249,7 @@ class SearchQuery:
 
     by_city: str | None = None
     by_country: str | None = None
-    by_dist: str | None = (
-        None  # Format: "latitude,longitude" #TODO: replace this with a Coordinate obect
-    )
+    by_dist: Coordinate | None = None
     by_name: str | None = None
     by_state: str | None = None
     by_postal: str | None = None
@@ -284,6 +282,11 @@ class SearchQuery:
                 f"Invalid value for by_type: {self.by_type}. Must be one of "
                 f"{', '.join([t.value for t in BreweryType])}",
             )
+        if self.by_dist is not None and not isinstance(self.by_dist, Coordinate):
+            raise ValueError(
+                f"Invalid value for by_dist: {self.by_dist}. Must be of "
+                "type Coordinate."
+            )
 
     def to_params(self) -> dict:
         """
@@ -292,7 +295,7 @@ class SearchQuery:
         params = {
             "by_city": self.by_city,
             "by_country": self.by_country,
-            "by_dist": self.by_dist,
+            "by_dist": self.by_dist.to_str() if self.by_dist else None,
             "by_ids": ",".join(self.by_ids) if self.by_ids else None,
             "by_name": self.by_name,
             "by_state": self.by_state,
