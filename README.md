@@ -92,15 +92,6 @@ Distributed under the MIT license. See ``LICENSE`` for more information.
 
 [https://github.com/tynardone/brewcli](https://github.com/tynardone/brewcli)
 
-## Contributing
-
-Contributions are welcome! To contribute:
-
-1. Fork the repository (<https://github.com/yourname/brewcli/fork>).
-2. Create a new feature branch (git checkout -b feature/fooBar).
-3. Commit your changes (git commit -am 'Add some fooBar').
-4. Push to the branch (git push origin feature/fooBar).
-5. Open a pull request.
 
 <!-- Markdown link & img dfn's -->
 [python-versions]: https://img.shields.io/pypi/pyversions/brewcli
