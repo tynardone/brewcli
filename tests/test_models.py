@@ -286,37 +286,23 @@ class TestSearchQuery:
                 type=brew_type,
             )
 
-    # TODO: test to_params method
     def test_to_params_all_fields(self, valid_query_inputs):
+        """
+        Test that to_params creates expecte key-value pairs with proper formatting
+        of ids and coordinates.
+        """
         query_set = SearchQuery(**valid_query_inputs)
         params = query_set.to_params()
-        assert params == {}
-
-
-"""    return {
-        "by_city": "Grand Rapids",
-        "by_country": "USA",
-        "by_dist": Coordinate(100, 100),
-        "by_name": "Brewery",
-        "by_state": "Michigan",
-        "by_postal": "11111",
-        "by_type": "micro",
-        "sort_order": "asc",
-        "by_ids": ["123", "456", "789"],
-        "page": 2,
-        "per_page": 100,
-    }
-
-     params = {
-            "by_city": self.by_city,
-            "by_country": self.by_country,
-            "by_dist": self.by_dist.to_str() if self.by_dist else None,
-            "by_ids": ",".join(self.by_ids) if self.by_ids else None,
-            "by_name": self.by_name,
-            "by_state": self.by_state,
-            "by_postal": self.by_postal,
-            "by_type": self.by_type,
-            "page": self.page,
-            "per_page": self.per_page,
-            "sort_order": self.sort_order,
-        }"""
+        assert params == {
+            "by_city": "Grand Rapids",
+            "by_country": "USA",
+            "by_dist": "100.0,100.0",
+            "by_ids": "123,456,789",
+            "by_name": "Brewery",
+            "by_state": "Michigan",
+            "by_postal": "11111",
+            "by_type": "micro",
+            "page": 2,
+            "per_page": 100,
+            "sort_order": "asc",
+        }

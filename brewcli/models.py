@@ -290,7 +290,19 @@ class SearchQuery:
 
     def to_params(self) -> dict:
         """
-        Convert the dataclass into a dictionary of query parameters.
+        Converts the SearchQuery instance into a dictionary of query parameters.
+
+        This method constructs a dictionary by mapping the dataclass attributes
+        to their respective API query parameter names. Fields with `None` values
+        are excluded from the final dictionary.
+
+        Returns:
+            dict: A dictionary of query parameters suitable for use in API requests.
+
+        Example:
+            >>> query = SearchQuery(city="Denver", country="US", page=2)
+            >>> query.to_params()
+            {'by_city': 'Denver', 'by_country': 'US', 'page': 2}
         """
         params = {
             "by_city": self.city,

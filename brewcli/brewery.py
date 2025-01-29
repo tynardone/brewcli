@@ -19,12 +19,7 @@ class BreweryAPI:
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
         ),
-        "Accept": (
-            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
-            "image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
-        ),
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
+        "Accept": "application/json, text/html;q=0.9, */*;q=0.8",
     }
 
     def __init__(self, base_url: str = BASE_URL):
@@ -60,7 +55,7 @@ class BreweryAPI:
             response.raise_for_status()
         except httpx.HTTPError as exc:
             print(f"Error while requesting {exc.request.url!r}.")  # pylint: disable=no-member
-
+            raise exc
         try:
             return response.json()
         except ValueError as exc:
@@ -89,3 +84,9 @@ class BreweryAPI:
             dict: The brewery details.
         """
         return self._handle_request(brewery_id)
+
+
+if __name__ == "__main__":
+    client = BreweryAPI()
+    response = client.get_random_breweries(5)
+    print(response)
