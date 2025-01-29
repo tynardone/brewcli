@@ -162,18 +162,18 @@ class TestBrewery:
 
 
 class TestSearchQuery:
-    def test_init_all_fields(self, valid_query_set):
+    def test_init_all_fields(self, valid_query_inputs):
         """Test initialization of SearchQuery from valid data where all fields
         are present."""
-        query_set = SearchQuery(**valid_query_set)
-        assert query_set.by_city == "Grand Rapids"
-        assert query_set.by_country == "USA"
-        assert query_set.by_dist == "100,100"
-        assert query_set.by_name == "Brewery"
-        assert query_set.by_state == "Michigan"
-        assert query_set.by_postal == "11111"
+        query_set = SearchQuery(**valid_query_inputs)
+        assert query_set.city == "Grand Rapids"
+        assert query_set.country == "USA"
+        assert query_set.coord == Coordinate(100, 100)
+        assert query_set.name == "Brewery"
+        assert query_set.state == "Michigan"
+        assert query_set.postal == "11111"
         assert query_set.sort_order == "asc"
-        assert query_set.by_ids == ["123", "456", "789"]
+        assert query_set.ids == ["123", "456", "789"]
         assert query_set.page == 2
         assert query_set.per_page == 100
 
@@ -182,14 +182,14 @@ class TestSearchQuery:
         Test for expected default parameters.
         """
         query_set = SearchQuery()
-        assert query_set.by_city is None
-        assert query_set.by_country is None
-        assert query_set.by_dist is None
-        assert query_set.by_name is None
-        assert query_set.by_state is None
-        assert query_set.by_postal is None
+        assert query_set.city is None
+        assert query_set.country is None
+        assert query_set.coord is None
+        assert query_set.name is None
+        assert query_set.state is None
+        assert query_set.postal is None
         assert query_set.sort_order is None
-        assert query_set.by_ids is None
+        assert query_set.ids is None
         assert query_set.page == 1
         assert query_set.per_page == 50
 
@@ -268,8 +268,8 @@ class TestSearchQuery:
         """
         Test by_type validation works for all members of BreweryType enum.
         """
-        query_set = SearchQuery(by_type=brew_type)
-        assert query_set.by_type == brew_type
+        query_set = SearchQuery(type=brew_type)
+        assert query_set.type == brew_type
 
     @pytest.mark.parametrize("brew_type", ["Micro", "invalid", 100, ""])
     def test_by_type_validation_invalid(self, brew_type: str):
@@ -279,11 +279,44 @@ class TestSearchQuery:
         """
         with pytest.raises(
             ValueError,
-            match=f"Invalid value for by_type: {brew_type}. Must be one of "
+            match=f"Invalid value for type: {brew_type}. Must be one of "
             f"{', '.join([t.value for t in BreweryType])}",
         ):
             SearchQuery(
-                by_type=brew_type,
+                type=brew_type,
             )
 
     # TODO: test to_params method
+    def test_to_params_all_fields(self, valid_query_inputs):
+        query_set = SearchQuery(**valid_query_inputs)
+        params = query_set.to_params()
+        assert params == {}
+
+
+"""    return {
+        "by_city": "Grand Rapids",
+        "by_country": "USA",
+        "by_dist": Coordinate(100, 100),
+        "by_name": "Brewery",
+        "by_state": "Michigan",
+        "by_postal": "11111",
+        "by_type": "micro",
+        "sort_order": "asc",
+        "by_ids": ["123", "456", "789"],
+        "page": 2,
+        "per_page": 100,
+    }
+
+     params = {
+            "by_city": self.by_city,
+            "by_country": self.by_country,
+            "by_dist": self.by_dist.to_str() if self.by_dist else None,
+            "by_ids": ",".join(self.by_ids) if self.by_ids else None,
+            "by_name": self.by_name,
+            "by_state": self.by_state,
+            "by_postal": self.by_postal,
+            "by_type": self.by_type,
+            "page": self.page,
+            "per_page": self.per_page,
+            "sort_order": self.sort_order,
+        }"""

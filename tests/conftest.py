@@ -2,6 +2,8 @@
 
 import pytest
 
+from brewcli.models import Coordinate
+
 
 @pytest.fixture
 def valid_brewery_response():
@@ -25,18 +27,18 @@ def valid_brewery_response():
 
 
 @pytest.fixture
-def valid_query_set():
+def valid_query_inputs():
     """Represents a full and valid set of query parameters."""
     return {
-        "by_city": "Grand Rapids",
-        "by_country": "USA",
-        "by_dist": "100,100",
-        "by_name": "Brewery",
-        "by_state": "Michigan",
-        "by_postal": "11111",
-        "by_type": "micro",
+        "city": "Grand Rapids",
+        "country": "USA",
+        "coord": Coordinate(100, 100),
+        "name": "Brewery",
+        "state": "Michigan",
+        "postal": "11111",
+        "type": "micro",
         "sort_order": "asc",
-        "by_ids": ["123", "456", "789"],
+        "ids": ["123", "456", "789"],
         "page": 2,
         "per_page": 100,
     }

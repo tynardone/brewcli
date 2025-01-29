@@ -92,7 +92,6 @@ Distributed under the MIT license. See ``LICENSE`` for more information.
 
 [https://github.com/tynardone/brewcli](https://github.com/tynardone/brewcli)
 
-
 <!-- Markdown link & img dfn's -->
 [python-versions]: https://img.shields.io/pypi/pyversions/brewcli
 [license]: https://img.shields.io/github/license/yourname/brewcli

@@ -35,6 +35,7 @@ class BreweryAPI:
             base_url (str): The base URL for the API. Defaults to Open Brewery DB URL.
         """
         self.base_url = base_url
+
         self.client = httpx.Client(headers=self.HEADERS)
 
     def _handle_request(self, endpoint: str, params: dict | None = None) -> Any:

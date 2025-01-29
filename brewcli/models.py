@@ -230,8 +230,8 @@ class SearchQuery:
             "latitude,longitude".
         by_name (str | None): The name of the brewery to search for.
         by_state (str | None): The state to filter the search results by.
-        by_postal (str | None): The postal code to filter the search results by.
-        by_type (BreweryType | None): The type of brewery to filter results by.
+        postal (str | None): The postal code to filter the search results by.
+        type (BreweryType | None): The type of brewery to filter results by.
         sort_order (str | None): The sorting order for the results,
             either 'asc' or 'desc'.
         by_ids (list[str] | None): A list of brewery IDs to filter the search
@@ -247,15 +247,15 @@ class SearchQuery:
             query parameters, excluding any fields with a value of `None`.
     """
 
-    by_city: str | None = None
-    by_country: str | None = None
-    by_dist: Coordinate | None = None
-    by_name: str | None = None
-    by_state: str | None = None
-    by_postal: str | None = None
-    by_type: str | None = None
+    city: str | None = None
+    country: str | None = None
+    coord: Coordinate | None = None
+    name: str | None = None
+    state: str | None = None
+    postal: str | None = None
+    type: str | None = None
     sort_order: str | None = None
-    by_ids: list[str] | None = None
+    ids: list[str] | None = None
     page: int | None = 1
     per_page: int | None = 50  # Default 50, max 200
 
@@ -277,14 +277,14 @@ class SearchQuery:
                     f"Invalid per_page: {self.per_page}. Must be an integer "
                     "from 1 to 200."
                 )
-        if self.by_type is not None and self.by_type not in BreweryType:
+        if self.type is not None and self.type not in BreweryType:
             raise ValueError(
-                f"Invalid value for by_type: {self.by_type}. Must be one of "
+                f"Invalid value for type: {self.type}. Must be one of "
                 f"{', '.join([t.value for t in BreweryType])}",
             )
-        if self.by_dist is not None and not isinstance(self.by_dist, Coordinate):
+        if self.coord is not None and not isinstance(self.coord, Coordinate):
             raise ValueError(
-                f"Invalid value for by_dist: {self.by_dist}. Must be of "
+                f"Invalid value for by_dist: {type(self.coord)}. Must be of "
                 "type Coordinate."
             )
 
@@ -293,14 +293,16 @@ class SearchQuery:
         Convert the dataclass into a dictionary of query parameters.
         """
         params = {
-            "by_city": self.by_city,
-            "by_country": self.by_country,
-            "by_dist": self.by_dist.to_str() if self.by_dist else None,
-            "by_ids": ",".join(self.by_ids) if self.by_ids else None,
-            "by_name": self.by_name,
-            "by_state": self.by_state,
-            "by_postal": self.by_postal,
-            "by_type": self.by_type,
+            "by_city": self.city,
+            "by_country": self.country,
+            "by_dist": self.coord.to_str()
+            if isinstance(self.coord, Coordinate)
+            else None,
+            "by_ids": ",".join(self.ids) if self.ids else None,
+            "by_name": self.name,
+            "by_state": self.state,
+            "by_postal": self.postal,
+            "by_type": self.type,
             "page": self.page,
             "per_page": self.per_page,
             "sort_order": self.sort_order,
