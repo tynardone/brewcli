@@ -7,27 +7,6 @@ from brewcli.models import Coordinate
 
 
 @pytest.fixture
-def valid_brewery_response():
-    """Represents a valid response from brewery api with all fields present."""
-    return {
-        "id": "brewery_1",
-        "name": "Sample Brewery",
-        "phone": "123-456-7890",
-        "website_url": "http://samplebrewery.com",
-        "address_1": "123 Main St",
-        "address_2": "Bldg 1",
-        "address_3": "Apt 1",
-        "street": "Main St",
-        "city": "Sample City",
-        "state": "Sample State",
-        "postal_code": "12345",
-        "country": "Sample Country",
-        "longitude": "123.123",
-        "latitude": "-123.123",
-    }
-
-
-@pytest.fixture
 def valid_query_inputs():
     """Represents a full and valid set of query parameters."""
     return {
@@ -59,15 +38,15 @@ def brewery_data():
         "name": "Osgood Brewing",
         "brewery_type": "brewpub",
         "address_1": "4051 Chicago Dr SW",
-        "address_2": None,
-        "address_3": None,
+        "address_2": "Bldg 1",
+        "address_3": "Unit 1",
         "city": "Grandville",
         "state_province": "Michigan",
-        "postal_code": "49418-1257",
+        "postal_code": "12345",
         "country": "United States",
         "longitude": "-85.76493039",
         "latitude": "42.90907804",
-        "phone": None,
+        "phone": "111-111-1111",
         "website_url": "http://www.osgoodbrewing.com",
         "state": "Michigan",
         "street": "4051 Chicago Dr SW",

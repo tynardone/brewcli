@@ -6,14 +6,15 @@ from brewcli.models import Address, Brewery, BreweryType, Coordinate, SearchQuer
 
 
 class TestCoordinate:
-    def test_init_valid_input(self, valid_brewery_response):
+    def test_init_valid_input(self, brewery_data):
         """Test creating a Coordinate with valid inputs."""
         coord = Coordinate(
-            longitude=valid_brewery_response["longitude"],
-            latitude=valid_brewery_response["latitude"],
+            longitude=brewery_data["longitude"],
+            latitude=brewery_data["latitude"],
         )
-        assert coord.longitude == 123.123
-        assert coord.latitude == -123.123
+
+        assert coord.longitude == -85.76493039
+        assert coord.latitude == 42.90907804
         assert isinstance(coord.longitude, float)
         assert isinstance(coord.latitude, float)
 
@@ -22,67 +23,70 @@ class TestCoordinate:
         with pytest.raises(ValueError):
             Coordinate(longitude="abc", latitude="56.78")
 
-    def test_init_invalid_range_input(self):
-        """Test checking valid coordinate range"""
+    @pytest.mark.parametrize(
+        "latitude,longitude", [(181, 100), (-181, -100), (100, -181), (100, 181)]
+    )
+    def test_init_invalid_range_input(self, latitude, longitude):
+        """Test checking valid coordinate range -180 to 180"""
         with pytest.raises(ValueError):
-            Coordinate(longitude=100, latitude=999)
+            Coordinate(longitude=longitude, latitude=latitude)
 
-    @pytest.mark.parametrize("long,lat", [(None, "123"), ("123", None)])
-    def test_init_none_fail(self, long, lat):
+    @pytest.mark.parametrize("latitude,longitude", [(None, "123"), ("123", None)])
+    def test_init_none_fail(self, latitude, longitude):
         """Test that a Coordinate fails when initialized with None values."""
         with pytest.raises(TypeError):
-            Coordinate(longitude=long, latitude=lat)
+            Coordinate(longitude=longitude, latitude=latitude)
 
     def test_to_str(self):
-        """Test to_str method output"""
+        """Test to_str method output '<latitude>,<longitude>.'"""
         coordinate = Coordinate(longitude=45.1234, latitude=-93.4567)
         assert coordinate.to_str() == "-93.4567,45.1234"
 
 
 class TestAddress:
-    def test_from_dict_full(self, valid_brewery_response):
+    def test_from_dict_full(self, brewery_data):
         """Test creating an Address from valid dictionary data."""
-        address = Address.from_dict(valid_brewery_response)
-        assert address.address_one == "123 Main St"
-        assert address.city == "Sample City"
+        address = Address.from_dict(brewery_data)
+        assert address.address_one == "4051 Chicago Dr SW"
+        assert address.city == "Grandville"
         assert address.address_two == "Bldg 1"
-        assert address.address_three == "Apt 1"
-        assert address.state == "Sample State"
+        assert address.address_three == "Unit 1"
+        assert address.state == "Michigan"
         assert address.postal_code == "12345"
-        assert address.country == "Sample Country"
-        assert address.coordinate.longitude == 123.123
-        assert address.coordinate.latitude == -123.123
+        assert address.country == "United States"
+        assert address.coordinate.longitude == -85.76493039
+        assert address.coordinate.latitude == 42.90907804
 
-    def test_from_dict_optional_none(self, valid_brewery_response):
+    def test_from_dict_optional_none(self, brewery_data):
         """Test creating Address without optional parameters."""
-        valid_brewery_response["address_2"] = None
-        valid_brewery_response["address_3"] = None
-        valid_brewery_response["longitude"] = None
-        valid_brewery_response["latitude"] = None
+        brewery_data["address_2"] = None
+        brewery_data["address_3"] = None
+        brewery_data["longitude"] = None
+        brewery_data["latitude"] = None
 
-        address = Address.from_dict(valid_brewery_response)
+        address = Address.from_dict(brewery_data)
 
-        assert address.address_one == "123 Main St"
-        assert address.city == "Sample City"
+        assert address.address_one == "4051 Chicago Dr SW"
+        assert address.city == "Grandville"
         assert address.address_two is None
         assert address.address_three is None
-        assert address.state == "Sample State"
+        assert address.state == "Michigan"
         assert address.postal_code == "12345"
-        assert address.country == "Sample Country"
+        assert address.country == "United States"
         assert address.coordinate is None
 
     @pytest.mark.parametrize(
-        "lat,long",
+        "latitude,longitude",
         [("abc", "100"), ("100", "abc"), ("abc", "abc")],
     )
-    def test_from_dict_invalid_coordinates(self, lat, long, valid_brewery_response):
+    def test_from_dict_invalid_coordinates(self, latitude, longitude, brewery_data):
         """
         Test Address is created with Coordinate None if bad latitude or longitude
         supplied.
         """
-        valid_brewery_response["latitude"] = lat
-        valid_brewery_response["longitude"] = long
-        address = Address.from_dict(valid_brewery_response)
+        brewery_data["latitude"] = latitude
+        brewery_data["longitude"] = longitude
+        address = Address.from_dict(brewery_data)
         assert address.coordinate is None
 
     @pytest.mark.parametrize(
@@ -99,17 +103,17 @@ class TestAddress:
         ],
     )
     def test_address_from_dict_with_invalid_coordinates(
-        self, data, expected_exception, valid_brewery_response
+        self, data, expected_exception, brewery_data
     ):
         """
         Test Address is created with coordinate as None if Coordinate initialization
         fails due to ValueError, TypeError, or KeyError.
         """
-        # Update valid_brewery_response with test-specific data
-        valid_brewery_response.update(data)
+        # Update brewery_data with test-specific data
+        brewery_data.update(data)
 
         # Create the Address object
-        address = Address.from_dict(valid_brewery_response)
+        address = Address.from_dict(brewery_data)
 
         # Assert that coordinate is None
         assert address.coordinate is None, (
@@ -117,13 +121,13 @@ class TestAddress:
             "is raised, but got a non-None value."
         )
 
-    def test_address_from_dict_missing_lat_long_keys(self, valid_brewery_response):
+    def test_address_from_dict_missing_lat_long_keys(self, brewery_data):
         """
         When data does not have latitude and/or longitude key, KeyError is caught
         and address.coordinate is None.
         """
         # Remove latitude and longitude keys using del
-        missing_lat_long = valid_brewery_response.copy()
+        missing_lat_long = brewery_data.copy()
         del missing_lat_long["latitude"]
         del missing_lat_long["longitude"]
 
@@ -133,29 +137,29 @@ class TestAddress:
 
 
 class TestBrewery:
-    def test_brewery_from_dict_valid(self, valid_brewery_response):
+    def test_brewery_from_dict_valid(self, brewery_data):
         """
         Test creating a Brewery from valid dictionary data
         """
-        brewery = Brewery.from_dict(valid_brewery_response)
-        assert brewery.id == "brewery_1"
-        assert brewery.name == "Sample Brewery"
-        assert brewery.address.city == "Sample City"
-        assert brewery.address.coordinate.longitude == 123.123
-        assert brewery.address.coordinate.latitude == -123.123
-        assert brewery.phone == "123-456-7890"
-        assert brewery.website_url == "http://samplebrewery.com"
+        brewery = Brewery.from_dict(brewery_data)
+        assert brewery.id == "b9c27692-5db5-44dd-aa88-b8b66b944f3c"
+        assert brewery.name == "Osgood Brewing"
+        assert brewery.address.city == "Grandville"
+        assert brewery.address.coordinate.longitude == -85.76493039
+        assert brewery.address.coordinate.latitude == 42.90907804
+        assert brewery.phone == "111-111-1111"
+        assert brewery.website_url == "http://www.osgoodbrewing.com"
 
-    def test_brewery_from_dict_invalid_coordinates(self, valid_brewery_response):
+    def test_brewery_from_dict_invalid_coordinates(self, brewery_data):
         """
         Test that coordinate is None if invalid latitude or longitude are supplied.
         """
-        # Update valid_brewery_response with invalid coordinates
-        valid_brewery_response["latitude"] = "invalid_latitude"
-        valid_brewery_response["longitude"] = "invalid_longitude"
+        # Update brewery_data with invalid coordinates
+        brewery_data["latitude"] = "invalid_latitude"
+        brewery_data["longitude"] = "invalid_longitude"
 
         # Create the Brewery object
-        brewery = Brewery.from_dict(valid_brewery_response)
+        brewery = Brewery.from_dict(brewery_data)
 
         # Assert that coordinate is None
         assert brewery.address.coordinate is None
