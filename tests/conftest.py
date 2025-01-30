@@ -2,6 +2,7 @@
 
 import pytest
 
+from brewcli.brewery import BreweryAPI
 from brewcli.models import Coordinate
 
 
@@ -41,4 +42,33 @@ def valid_query_inputs():
         "ids": ["123", "456", "789"],
         "page": 2,
         "per_page": 100,
+    }
+
+
+@pytest.fixture
+def brewery_api():
+    """Fixture to provide a BreweryAPI instance."""
+    return BreweryAPI()
+
+
+@pytest.fixture
+def brewery_data():
+    """Fixture to provide mock brewery data."""
+    return {
+        "id": "b9c27692-5db5-44dd-aa88-b8b66b944f3c",
+        "name": "Osgood Brewing",
+        "brewery_type": "brewpub",
+        "address_1": "4051 Chicago Dr SW",
+        "address_2": None,
+        "address_3": None,
+        "city": "Grandville",
+        "state_province": "Michigan",
+        "postal_code": "49418-1257",
+        "country": "United States",
+        "longitude": "-85.76493039",
+        "latitude": "42.90907804",
+        "phone": None,
+        "website_url": "http://www.osgoodbrewing.com",
+        "state": "Michigan",
+        "street": "4051 Chicago Dr SW",
     }

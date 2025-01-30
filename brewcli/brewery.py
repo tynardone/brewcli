@@ -88,5 +88,5 @@ class BreweryAPI:
 
 if __name__ == "__main__":
     client = BreweryAPI()
-    response = client.get_random_breweries(5)
-    print(response)
+    r = client.get_random_breweries(5)
+    print(r)
