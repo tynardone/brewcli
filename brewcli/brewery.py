@@ -4,6 +4,8 @@ from typing import Any
 
 import httpx
 
+from brewcli.models import SearchQuery
+
 
 class BreweryAPI:
     """
@@ -33,7 +35,9 @@ class BreweryAPI:
 
         self.client = httpx.Client(headers=self.HEADERS)
 
-    def _handle_request(self, endpoint: str, params: dict | None = None) -> Any:
+    def _handle_request(
+        self, endpoint: str | None = None, params: dict | None = None
+    ) -> Any:
         """
         Internal method to handle GET requests to the API.
 
@@ -48,7 +52,10 @@ class BreweryAPI:
             httpx.HTTPError: If the request fails.
             ValueError: If the response cannot be parsed as JSON.
         """
-        url = f"{self.base_url}/{endpoint}"
+        if endpoint:
+            url = f"{self.base_url}/{endpoint}"
+        else:
+            url = self.base_url
 
         try:
             response = self.client.get(url, params=params)
@@ -84,6 +91,29 @@ class BreweryAPI:
             dict: The brewery details.
         """
         return self._handle_request(brewery_id)
+
+    def get_brewery_filters(self, search_query: SearchQuery) -> Any:
+        """
+        Fetches a list of breweries based on the specified search query filters.
+
+        This method constructs the necessary query parameters from the provided
+        `SearchQuery` object and sends a request to the Open Brewery DB API to
+        retrieve breweries that match the search criteria.
+
+        Args:
+            search_query (SearchQuery): An object containing search filters to be
+                                        applied to the brewery search.
+
+        Returns:
+            Any: The JSON response from the API, typically a list of breweries
+                that match the search query.
+
+        Raises:
+            httpx.HTTPError: If the request to the API fails.
+            ValueError: If the response cannot be parsed as JSON.
+        """
+        params = search_query.to_params()
+        return self._handle_request(params=params)
 
 
 if __name__ == "__main__":
