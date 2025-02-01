@@ -61,8 +61,8 @@ class BreweryAPI:
             response = self.client.get(url, params=params)
             response.raise_for_status()
         except httpx.HTTPError as exc:
-            print(f"Error while requesting {exc.request.url!r}.")  # pylint: disable=no-member
-            raise exc
+            raise httpx.HTTPError(f"Error while requesting {url}.") from exc
+
         try:
             return response.json()
         except ValueError as exc:

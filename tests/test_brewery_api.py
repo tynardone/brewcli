@@ -1,5 +1,8 @@
 # Need to mock httpx.get for testing the request functions
+import httpx
 import pytest
+
+from brewcli.brewery import BreweryAPI
 
 
 @pytest.mark.parametrize("num_breweries", [1, 3, 5])
@@ -28,3 +31,17 @@ def test_invalid_brewery_id(httpx_mock, brewery_api):
     httpx_mock.add_response(status_code=404, json={"message": "Not Found"})
     with pytest.raises(Exception):
         brewery_api.get_brewery_by_id("invalid_id")
+
+
+def test_handle_request_404(httpx_mock):
+    """Test that a 404 Not Found error is correctly raised."""
+    httpx_mock.add_response(
+        status_code=404, url="https://api.openbrewerydb.org/v1/breweries/nonexistent"
+    )
+
+    api = BreweryAPI()
+    with pytest.raises(
+        httpx.HTTPError,
+        match="Error while requesting https://api.openbrewerydb.org/v1/breweries/nonexistent",
+    ):
+        api.get_brewery_by_id("nonexistent")
