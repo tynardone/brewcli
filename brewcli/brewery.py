@@ -6,6 +6,15 @@ import httpx
 
 from brewcli.models import SearchQuery
 
+BASE_URL = "https://api.openbrewerydb.org/v1/breweries"
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json, text/html;q=0.9, */*;q=0.8",
+}
+
 
 class BreweryAPI:
     """
@@ -15,15 +24,6 @@ class BreweryAPI:
     random breweries and getting details for a specific brewery by ID.
     """
 
-    BASE_URL = "https://api.openbrewerydb.org/v1/breweries"
-    HEADERS = {
-        "User-Agent": (
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
-        ),
-        "Accept": "application/json, text/html;q=0.9, */*;q=0.8",
-    }
-
     def __init__(self, base_url: str = BASE_URL):
         """
         Initializes the BreweryAPI object with the base URL.
@@ -31,9 +31,19 @@ class BreweryAPI:
         Args:
             base_url (str): The base URL for the API. Defaults to Open Brewery DB URL.
         """
-        self.base_url = base_url
+        self.base_url: str = base_url
+        self.client: httpx.Client
+        self.headers = HEADERS
 
-        self.client = httpx.Client(headers=self.HEADERS)
+    def __enter__(self) -> "BreweryAPI":
+        """Initializes the HTTP client when entering the context."""
+        self.client = httpx.Client(headers=self.headers)
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        """Ensures the HTTP client is closed when exiting the context."""
+        if self.client:
+            self.client.close()
 
     def _handle_request(
         self, endpoint: str | None = None, params: dict | None = None
@@ -117,6 +127,8 @@ class BreweryAPI:
 
 
 if __name__ == "__main__":
-    client = BreweryAPI()
-    r = client.get_random_breweries(5)
+    with BreweryAPI() as client:
+        print("Init client")
+        r = client.get_random_breweries(3)
+    print("Closing client")
     print(r)
