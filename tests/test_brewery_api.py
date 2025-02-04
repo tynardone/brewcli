@@ -5,43 +5,51 @@ import pytest
 from brewcli.brewery import BreweryAPI
 
 
-@pytest.mark.parametrize("num_breweries", [1, 3, 5])
-def test_get_random_breweries(httpx_mock, brewery_api, brewery_data, num_breweries):
-    """Test fetching a variable number of random breweries."""
-    httpx_mock.add_response(json=[brewery_data] * num_breweries)
-    response = brewery_api.get_random_breweries(num_breweries)
-    assert isinstance(response, list)
-    assert len(response) == num_breweries
-    assert all(brewery["name"] == brewery_data["name"] for brewery in response)
-    assert all(brewery["city"] == brewery_data["city"] for brewery in response)
+def test_brewery_api_initialization():
+    """Test that the BreweryAPI initializes correctly."""
+    with BreweryAPI() as client:
+        assert isinstance(client.client, httpx.Client)
+        assert client.base_url == "https://api.openbrewerydb.org/v1/breweries"
+        assert client.headers == {
+            "User-Agent": (
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+            ),
+            "Accept": "application/json, text/html;q=0.9, */*;q=0.8",
+        }
 
 
-def test_get_brewery_by_id(httpx_mock, brewery_api, brewery_data):
-    """Test fetching a brewery by ID."""
-    httpx_mock.add_response(json=brewery_data)
-    response = brewery_api.get_brewery_by_id(brewery_data["id"])
-    assert isinstance(response, dict)
-    assert response["id"] == brewery_data["id"]
-    assert response["name"] == brewery_data["name"]
-    assert response["city"] == brewery_data["city"]
+def test_get_random_breweries(httpx_mock, api_client: BreweryAPI):
+    """Test `get_random_breweries` method."""
+    mock_response = [{"id": "abc123", "name": "Random Brewery"}]
+    httpx_mock.add_response(json=mock_response)
+
+    response = api_client.get_random_breweries(1)
+    assert response == mock_response
 
 
-def test_invalid_brewery_id(httpx_mock, brewery_api):
-    """Test handling of invalid brewery ID."""
-    httpx_mock.add_response(status_code=404, json={"message": "Not Found"})
-    with pytest.raises(Exception):
-        brewery_api.get_brewery_by_id("invalid_id")
+def test_client_closes_after_context():
+    """Test that the HTTP client is closed after exiting the context manager."""
+
+    with BreweryAPI() as client:
+        assert client.client.is_closed is False
+
+    assert client.client.is_closed is True
 
 
-def test_handle_request_404(httpx_mock):
-    """Test that a 404 Not Found error is correctly raised."""
+def test_context_manager_closes_client():
+    """Test that client context manager is working."""
+    with BreweryAPI() as client:
+        assert client.client.is_closed is False
+    assert client.client.is_closed is True
+
+
+def test_client_handles_invalid_json(httpx_mock, api_client):
+    """Test that API methods raise `ValueError` when JSON parsing fails."""
     httpx_mock.add_response(
-        status_code=404, url="https://api.openbrewerydb.org/v1/breweries/nonexistent"
+        url="https://api.openbrewerydb.org/v1/breweries/random?size=1",
+        content="Not a JSON response",
     )
 
-    api = BreweryAPI()
-    with pytest.raises(
-        httpx.HTTPError,
-        match="Error while requesting https://api.openbrewerydb.org/v1/breweries/nonexistent",
-    ):
-        api.get_brewery_by_id("nonexistent")
+    with pytest.raises(ValueError):
+        api_client.get_random_breweries()

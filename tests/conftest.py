@@ -25,9 +25,10 @@ def valid_query_inputs():
 
 
 @pytest.fixture
-def brewery_api():
-    """Fixture to provide a BreweryAPI instance."""
-    return BreweryAPI()
+def api_client():
+    """Fixture to provide an instance of BreweryAPI in a context manager."""
+    with BreweryAPI() as client:
+        yield client
 
 
 @pytest.fixture
