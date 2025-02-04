@@ -50,8 +50,43 @@ def test_client_handles_invalid_json(httpx_mock, api_client):
 def test_handle_http_error(httpx_mock, api_client):
     """Test that client handles HTTP errors."""
     httpx_mock.add_response(
-        url="https://api.openbrewerydb.org/v1/breweries/random?size=2", status_code=500
+        url=httpx.URL(
+            "https://api.openbrewerydb.org/v1/breweries/random", params={"size": 2}
+        ),
+        status_code=500,
     )
 
     with pytest.raises(httpx.HTTPError):
         api_client.get_random_breweries(2)
+
+
+def test_get_brewery_by_id_success(httpx_mock, api_client):
+    mock_response = {"id": "123", "name": "Test Brewery"}
+    httpx_mock.add_response(
+        url="https://api.openbrewerydb.org/v1/breweries/123", json=mock_response
+    )
+
+    response = api_client.get_brewery_by_id("123")
+
+    assert response == mock_response
+
+
+def test_get_random_breweries_success(httpx_mock):
+    mock_response = [
+        {"id": "1", "name": "Brewery A"},
+        {"id": "2", "name": "Brewery B"},
+    ]
+    httpx_mock.add_response(
+        url=httpx.URL(
+            "https://api.openbrewerydb.org/v1/breweries/random", params={"size": 2}
+        ),
+        json=mock_response,
+    )
+
+    with BreweryAPI() as client:
+        response = client.get_random_breweries(2)
+
+    assert response == mock_response
+    assert len(httpx_mock.get_requests()) == 1
+    request = httpx_mock.get_requests()[0]
+    assert request.url == "https://api.openbrewerydb.org/v1/breweries/random?size=2"
