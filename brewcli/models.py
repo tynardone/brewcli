@@ -106,7 +106,7 @@ class Address:
                 longitude=data["longitude"], latitude=data["latitude"]
             )
         except (ValueError, KeyError, TypeError) as exc:
-            print(f"Error: {exc}")
+            print(f"Could not create coordinate for {data["name"]}: {exc}")
             coordinate = None
         return cls(
             address_one=data["address_1"],

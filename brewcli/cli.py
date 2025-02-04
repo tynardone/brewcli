@@ -4,8 +4,6 @@ from httpx import HTTPError
 from .brewery import BreweryAPI
 from .models import Brewery
 
-brewery_client = BreweryAPI()
-
 
 @click.group()
 def cli() -> None:
@@ -26,17 +24,18 @@ def random(number: int) -> None:
     Args:
         number (int):
     """
-    try:
-        breweries = [
-            Brewery.from_dict(brewery)
-            for brewery in brewery_client.get_random_breweries(number=number)
-        ]
-    except HTTPError as exc:
-        click.echo(f"HTTP Exception for {exc.request.url} - {exc}", err=True)
-        return
+    with BreweryAPI() as client:
+        try:
+            breweries = [
+                Brewery.from_dict(brewery)
+                for brewery in client.get_random_breweries(number=number)
+            ]
+        except HTTPError as exc:
+            click.echo(f"HTTP Exception for {exc.request.url} - {exc}", err=True)
+            return
 
-    for brewery in breweries:
-        click.echo(brewery)
+        for brewery in breweries:
+            click.echo(brewery)
 
 
 @cli.command()
@@ -46,7 +45,7 @@ def by_id():
 
 
 @cli.command()
-@click.argument()
+@click.argument("search")
 def search():
     """Retrieve a set of breweries using search."""
 
