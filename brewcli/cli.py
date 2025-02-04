@@ -34,8 +34,8 @@ def random(number: int) -> None:
             click.echo(f"HTTP Exception for {exc.request.url} - {exc}", err=True)
             return
 
-        for brewery in breweries:
-            click.echo(brewery)
+    for brewery in breweries:
+        click.echo(brewery)
 
 
 @cli.command()

@@ -61,6 +61,12 @@ def test_handle_http_error(httpx_mock, api_client):
 
 
 def test_get_brewery_by_id_success(httpx_mock, api_client):
+    """
+    Test successful retrieval of a brewery by ID.
+
+    Verifies that the API returns the correct mock response
+    when fetching a brewery with a specific ID.
+    """
     mock_response = {"id": "123", "name": "Test Brewery"}
     httpx_mock.add_response(
         url="https://api.openbrewerydb.org/v1/breweries/123", json=mock_response
@@ -72,6 +78,12 @@ def test_get_brewery_by_id_success(httpx_mock, api_client):
 
 
 def test_get_random_breweries_success(httpx_mock):
+    """
+    Test successful retrieval of random breweries.
+
+    Verifies that the API returns the correct mock response
+    and that the request URL is formed correctly.
+    """
     mock_response = [
         {"id": "1", "name": "Brewery A"},
         {"id": "2", "name": "Brewery B"},
