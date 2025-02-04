@@ -33,14 +33,6 @@ def test_client_closes_after_context():
 
     with BreweryAPI() as client:
         assert client.client.is_closed is False
-
-    assert client.client.is_closed is True
-
-
-def test_context_manager_closes_client():
-    """Test that client context manager is working."""
-    with BreweryAPI() as client:
-        assert client.client.is_closed is False
     assert client.client.is_closed is True
 
 
@@ -53,3 +45,13 @@ def test_client_handles_invalid_json(httpx_mock, api_client):
 
     with pytest.raises(ValueError):
         api_client.get_random_breweries()
+
+
+def test_handle_http_error(httpx_mock, api_client):
+    """Test that client handles HTTP errors."""
+    httpx_mock.add_response(
+        url="https://api.openbrewerydb.org/v1/breweries/random?size=2", status_code=500
+    )
+
+    with pytest.raises(httpx.HTTPError):
+        api_client.get_random_breweries(2)
