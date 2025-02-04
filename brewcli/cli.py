@@ -19,7 +19,7 @@ def cli() -> None:
 
 @cli.command()
 @click.argument("number", type=int)
-def random(number: int, save) -> None:
+def random(number: int) -> None:
     """
     Retrieve a random set of breweries
 
@@ -43,14 +43,12 @@ def random(number: int, save) -> None:
 @click.argument("id")
 def by_id():
     """Retrieve a brewery by ID"""
-    pass
 
 
 @cli.command()
 @click.argument()
 def search():
     """Retrieve a set of breweries using search."""
-    pass
 
 
 cli.add_command(random)
