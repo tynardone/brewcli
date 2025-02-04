@@ -144,6 +144,7 @@ class Brewery:
 
     id: str
     name: str
+    brewery_type: str
     address: Address
     phone: str
     website_url: str
@@ -158,6 +159,7 @@ class Brewery:
             keys include:
                 - "id" (str): The brewery's unique identifier.
                 - "name" (str): The brewery's name.
+                - "brewery_type" (str): Type of brewery.
                 - "address_1", "address_2", "address_3", "street", "city", "state",
                     "postal_code", "country": Address details passed to `
                     Address.from_dict`.
@@ -178,6 +180,7 @@ class Brewery:
             >>> data = {
             ...     "id": "b54b16e1-ac3b-4bff-a11f-f7ae9ddc27e0",
             ...     "name": "MadTree Brewing 2.0",
+            ...     "brewery_type": "large",
             ...     "address_1": "5164 Kennedy Ave",
             ...     "city": "Cincinnati",
             ...     "state": "Ohio",
@@ -196,10 +199,35 @@ class Brewery:
         return cls(
             id=data["id"],
             name=data["name"],
+            brewery_type=data["brewery_type"],
             address=address,
             phone=data["phone"],
             website_url=data["website_url"],
         )
+
+    def to_flat_dict(self) -> dict:
+        """Returns a flattened dictionary from Brewery instance."""
+        return {
+            "id": self.id,
+            "name": self.name,
+            "brewery_type": self.brewery_type,
+            "phone": self.phone,
+            "website_url": self.website_url,
+            "address_one": self.address.address_one,
+            "address_two": self.address.address_two,
+            "address_three": self.address.address_three,
+            "postal_code": self.address.postal_code,
+            "city": self.address.city,
+            "state": self.address.state,
+            "country": self.address.country,
+            "street": self.address.street,
+            "latitude": self.address.coordinate.latitude
+            if self.address.coordinate
+            else None,
+            "longituge": self.address.coordinate.longitude
+            if self.address.coordinate
+            else None,
+        }
 
 
 class BreweryType(Enum):

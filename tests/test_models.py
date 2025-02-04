@@ -144,6 +144,7 @@ class TestBrewery:
         brewery = Brewery.from_dict(brewery_data)
         assert brewery.id == "b9c27692-5db5-44dd-aa88-b8b66b944f3c"
         assert brewery.name == "Osgood Brewing"
+        assert brewery.brewery_type == "brewpub"
         assert brewery.address.city == "Grandville"
         assert brewery.address.coordinate.longitude == -85.76493039
         assert brewery.address.coordinate.latitude == 42.90907804
@@ -164,6 +165,10 @@ class TestBrewery:
         # Assert that coordinate is None
         assert brewery.address.coordinate is None
 
+    def test_to_flat_dict(self):
+        # TODO: implement test
+        pass
+
 
 class TestSearchQuery:
     def test_init_all_fields(self, valid_query_inputs):
@@ -175,6 +180,7 @@ class TestSearchQuery:
         assert query_set.coord == Coordinate(100, 100)
         assert query_set.name == "Brewery"
         assert query_set.state == "Michigan"
+        assert query_set.type == "micro"
         assert query_set.postal == "11111"
         assert query_set.sort_order == "asc"
         assert query_set.ids == ["123", "456", "789"]
@@ -190,6 +196,7 @@ class TestSearchQuery:
         assert query_set.country is None
         assert query_set.coord is None
         assert query_set.name is None
+        assert query_set.type is None
         assert query_set.state is None
         assert query_set.postal is None
         assert query_set.sort_order is None
