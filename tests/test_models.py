@@ -165,9 +165,56 @@ class TestBrewery:
         # Assert that coordinate is None
         assert brewery.address.coordinate is None
 
-    def test_to_flat_dict(self):
-        # TODO: implement test
-        pass
+    def test_to_flat_dict(self, brewery_data):
+        """Test that to_flat_dict works properly"""
+        brewery = Brewery.from_dict(brewery_data)
+        flat_dict = brewery.to_flat_dict()
+
+        assert flat_dict == {
+            "id": "b9c27692-5db5-44dd-aa88-b8b66b944f3c",
+            "name": "Osgood Brewing",
+            "brewery_type": "brewpub",
+            "address_one": "4051 Chicago Dr SW",
+            "address_two": "Bldg 1",
+            "address_three": "Unit 1",
+            "city": "Grandville",
+            "postal_code": "12345",
+            "country": "United States",
+            "longitude": -85.76493039,
+            "latitude": 42.90907804,
+            "phone": "111-111-1111",
+            "website_url": "http://www.osgoodbrewing.com",
+            "state": "Michigan",
+            "street": "4051 Chicago Dr SW",
+        }
+
+    @pytest.mark.parametrize(
+        "latitude,longitude", [(None, 100.0), (100.0, None), (None, None)]
+    )
+    def test_to_flat_dict_no_coordinate(self, latitude, longitude, brewery_data):
+        brewery_data["latitude"] = latitude
+        brewery_data["longitude"] = longitude
+        brewery = Brewery.from_dict(brewery_data)
+        flat_dict = brewery.to_flat_dict()
+
+        assert brewery.address.coordinate is None
+        assert flat_dict == {
+            "id": "b9c27692-5db5-44dd-aa88-b8b66b944f3c",
+            "name": "Osgood Brewing",
+            "brewery_type": "brewpub",
+            "address_one": "4051 Chicago Dr SW",
+            "address_two": "Bldg 1",
+            "address_three": "Unit 1",
+            "city": "Grandville",
+            "postal_code": "12345",
+            "country": "United States",
+            "longitude": None,
+            "latitude": None,
+            "phone": "111-111-1111",
+            "website_url": "http://www.osgoodbrewing.com",
+            "state": "Michigan",
+            "street": "4051 Chicago Dr SW",
+        }
 
 
 class TestSearchQuery:

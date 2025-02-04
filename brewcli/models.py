@@ -224,7 +224,7 @@ class Brewery:
             "latitude": self.address.coordinate.latitude
             if self.address.coordinate
             else None,
-            "longituge": self.address.coordinate.longitude
+            "longitude": self.address.coordinate.longitude
             if self.address.coordinate
             else None,
         }
