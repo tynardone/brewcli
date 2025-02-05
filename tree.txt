@@ -1,0 +1,30 @@
+.
+├── LICENSE
+├── README.md
+├── __pycache__
+│   ├── brewery.cpython-312.pyc
+│   └── models.cpython-312.pyc
+├── brewcli
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── __pycache__
+│   ├── brewery.py
+│   ├── cli.py
+│   └── models.py
+├── pyproject.toml
+├── requirements.txt
+├── tests
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── conftest.py
+│   ├── test_brewery_api.py
+│   ├── test_cli.py
+│   └── test_models.py
+├── tree.txt
+└── venv
+    ├── bin
+    ├── include
+    ├── lib
+    └── pyvenv.cfg
+
+10 directories, 18 files

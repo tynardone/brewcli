@@ -2,7 +2,7 @@ import click
 from httpx import HTTPError
 
 from .brewery import BreweryAPI
-from .models import Brewery
+from .models import BREWERY_TYPES, Brewery
 
 
 @click.group()
@@ -19,10 +19,10 @@ def cli() -> None:
 @click.argument("number", type=int)
 def random(number: int) -> None:
     """
-    Retrieve a random set of breweries
+    Retrieve a random set of breweries.
 
     Args:
-        number (int):
+        number (int): The number of random breweries to retrieve.
     """
     with BreweryAPI() as client:
         try:
@@ -36,20 +36,27 @@ def random(number: int) -> None:
 
     for brewery in breweries:
         click.echo(brewery)
+        click.echo()
 
 
 @cli.command()
 @click.argument("id")
-def by_id():
+def by_id(id: int):
     """Retrieve a brewery by ID"""
 
 
 @cli.command()
 @click.argument("search")
-def search():
+@click.option("--by-city", type=str)
+@click.option("--by-country", type=str)
+@click.option("--by-dist", type=str)
+@click.option("--by-name", type=str)
+@click.option("--by-postal", type=int)
+@click.option("--by-type", type=click.Choice(BREWERY_TYPES, case_sensitive=False))
+def search(by_city: str, by_country: str, by_dist: str, by_postal: int, by_type: str):
     """Retrieve a set of breweries using search."""
 
 
 cli.add_command(random)
-cli.add_command(by_id, "id")
+cli.add_command(by_id)
 cli.add_command(search)

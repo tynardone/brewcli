@@ -230,6 +230,18 @@ class Brewery:
         }
 
 
+BREWERY_TYPES = [
+    "micro",
+    "nano",
+    "regional",
+    "brewpub",
+    "planning",
+    "contract",
+    "proprietor",
+    "closed",
+]
+
+
 class BreweryType(Enum):
     MICRO = "micro"
     NANO = "nano"
