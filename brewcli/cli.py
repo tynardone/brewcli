@@ -56,15 +56,22 @@ def by_id(brewery_id: str) -> None:
 
 
 @cli.command()
-@click.argument("search")
-@click.option("--by-city", type=str)
-@click.option("--by-country", type=str)
-@click.option("--by-dist", type=str)
-@click.option("--by-name", type=str)
-@click.option("--by-postal", type=int)
+@click.option("--by-city", type=click.STRING)
+@click.option("--by-country", type=click.STRING)
+@click.option("--by-dist", type=click.STRING)
+@click.option("--by-name", type=click.STRING)
+@click.option("--by-postal", type=click.INT)
 @click.option("--by-type", type=click.Choice(BREWERY_TYPES, case_sensitive=False))
-def search(by_city: str, by_country: str, by_dist: str, by_postal: int, by_type: str):
+def search(
+    by_city: str | None,
+    by_country: str | None,
+    by_dist: str | None,
+    by_postal: int | None,
+    by_type: str | None,
+    by_name: str | None,
+):
     """Retrieve a set of breweries using search."""
+    click.echo(type(by_country))
 
 
 cli.add_command(random)
