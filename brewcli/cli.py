@@ -16,7 +16,7 @@ def cli() -> None:
 
 
 @cli.command()
-@click.argument("number", type=int)
+@click.argument("number", type=click.INT)
 def random(number: int) -> None:
     """
     Retrieve a random set of breweries.
@@ -26,7 +26,7 @@ def random(number: int) -> None:
     """
     with BreweryAPI() as client:
         try:
-            breweries = [
+            breweries: list[Brewery] = [
                 Brewery.from_dict(brewery)
                 for brewery in client.get_random_breweries(number=number)
             ]
@@ -40,9 +40,19 @@ def random(number: int) -> None:
 
 
 @cli.command()
-@click.argument("id")
-def by_id(id: int):
+@click.argument("brewery_id", type=click.STRING)
+def by_id(brewery_id: str) -> None:
     """Retrieve a brewery by ID"""
+    with BreweryAPI() as client:
+        try:
+            data: dict = client.get_brewery_by_id(brewery_id=brewery_id)
+            brewery: Brewery = Brewery.from_dict(data)
+        except (KeyError, TypeError) as exc:
+            click.echo(f"Error occurred creating Brewery from response data: {exc}")
+        except HTTPError as exc:
+            click.echo(f"HTTP Exception for {exc.request.url} - {exc}", err=True)
+
+    click.echo(brewery)
 
 
 @cli.command()
