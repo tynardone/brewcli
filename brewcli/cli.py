@@ -71,7 +71,6 @@ def search(
     by_name: str | None,
 ):
     """Retrieve a set of breweries using search."""
-    click.echo(type(by_country))
 
 
 cli.add_command(random)

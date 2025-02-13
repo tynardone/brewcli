@@ -42,6 +42,15 @@ class TestCoordinate:
         coordinate = Coordinate(longitude=45.1234, latitude=-93.4567)
         assert coordinate.to_str() == "-93.4567,45.1234"
 
+    def test_from_str_valid(self):
+        coordinate = Coordinate.from_str("123.123,456.789")
+        assert coordinate == Coordinate(latitude=123.123, longitude=456.789)
+
+    @pytest.mark.parametrize("input", ["123.123", ",123.123", "invalid", ","])
+    def test_from_str_invalid(self):
+        with pytest.raises(ValueError):
+            Coordinate.from_str()
+
 
 class TestAddress:
     def test_from_dict_full(self, brewery_data):
