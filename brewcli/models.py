@@ -60,6 +60,37 @@ class Coordinate:
         """
         return f"{self.latitude},{self.longitude}"
 
+    @classmethod
+    def from_str(cls, coordinate: str):
+        """
+        Creates an instance from a string containing the latitude and longitude
+        separated by a comma.
+
+        Attributes:
+            coordinate (str): String representing a coordinate of the
+                form "<latitude>,<longitude>"
+        """
+
+        # Try to split on comma and should have exactly 2 elements
+        # Trim whitespace
+        # Try to convert each element to a float
+        # If successfully converted to floats return a Coordinate object
+
+        try:
+            lat_long = [s.strip() for s in coordinate.split(",")]
+
+            if len(lat_long) != 2:
+                raise ValueError("Input must be in the format '<latitude>,<longitude>'")
+
+            lat, long = float(lat_long[0]), float(lat_long[1])
+
+            return cls(lat, long)
+
+        except ValueError as exc:
+            raise ValueError(
+                f"Invalid coordinate format: {coordinate}. Error: {exc}"
+            ) from exc
+
 
 @dataclass
 class Address:

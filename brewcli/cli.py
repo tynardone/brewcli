@@ -11,7 +11,7 @@ def cli() -> None:
     A simple CLI that retrieves random breweries and displays their name, location,
     and a link to their website.
 
-    Provide a number specifying how many brewerys you would like!
+    Provide a number specifying how many breweries you would like!
     """
 
 
@@ -49,8 +49,10 @@ def by_id(brewery_id: str) -> None:
             brewery: Brewery = Brewery.from_dict(data)
         except (KeyError, TypeError) as exc:
             click.echo(f"Error occurred creating Brewery from response data: {exc}")
+            return
         except HTTPError as exc:
             click.echo(f"HTTP Exception for {exc.request.url} - {exc}", err=True)
+            return
 
     click.echo(brewery)
 
@@ -70,7 +72,16 @@ def search(
     by_type: str | None,
     by_name: str | None,
 ):
-    """Retrieve a set of breweries using search."""
+    """Retrieve a set of breweries using one or more search terms."""
+    filters = {
+        "by_city": by_city,
+        "by_country": by_country,
+        "by_dist": by_dist,
+        "by_postal": by_postal,
+        "by_type": by_type,
+        "by_name": by_name,
+    }
+    filters = {k: v for k, v in filters.items() if v is not None}
 
 
 cli.add_command(random)
