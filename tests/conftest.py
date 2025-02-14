@@ -1,7 +1,6 @@
 """Fixtures and other shared test resources"""
 
 import pytest
-from click.testing import CliRunner
 
 from brewcli.brewery import BreweryAPI
 from brewcli.models import Coordinate
@@ -53,11 +52,3 @@ def brewery_data():
         "state": "Michigan",
         "street": "4051 Chicago Dr SW",
     }
-
-
-@pytest.fixture
-def clirunner():
-    """
-    Provides a  CliRunner instance for CLI tests.
-    """
-    return CliRunner()
