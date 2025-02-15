@@ -33,6 +33,12 @@ def random(number: int) -> None:
         except HTTPError as exc:
             click.echo(f"HTTP Exception for {exc.request.url} - {exc}", err=True)
             return
+        except KeyError as exc:
+            click.echo(
+                f"KeyError while instantiation Brewery from dictionary. Error: {exc}",
+                err=True,
+            )
+            return
 
     for brewery in breweries:
         click.echo(brewery)

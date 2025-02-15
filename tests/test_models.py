@@ -43,7 +43,7 @@ class TestCoordinate:
         assert coordinate.to_str() == "-93.4567,45.1234"
 
     @pytest.mark.parametrize(
-        "input,result",
+        "coordinate,result",
         [
             (
                 "123.123,-123.123",
@@ -53,12 +53,14 @@ class TestCoordinate:
             ("100,   100", Coordinate(latitude=100, longitude=100)),
         ],
     )
-    def test_from_str_valid(self, input, result):
-        coordinate = Coordinate.from_str(coordinate=input)
+    def test_from_str_valid(self, coordinate, result):
+        """Test successful class instanciation via from_str"""
+        coordinate = Coordinate.from_str(coordinate=coordinate)
         assert coordinate == result
 
     @pytest.mark.parametrize("coordinate", ["123.123", ",123.123", "invalid", ","])
     def test_from_str_invalid(self, coordinate):
+        """Test failed instanciation via from_str"""
         with pytest.raises(ValueError):
             Coordinate.from_str(coordinate=coordinate)
 
