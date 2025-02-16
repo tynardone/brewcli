@@ -1,3 +1,13 @@
+[build-system]
+requires = ["setuptools>=65.5.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "brewcli"
+version = "0.1.0"
+readme = "README.md"
+authors = [{ name = "Tyler Nardone", email = "tynardone@gmail.com" }]
+
 [tool.ruff.lint]
 extend-select = ["E501"]
 
