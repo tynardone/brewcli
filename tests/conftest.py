@@ -52,3 +52,28 @@ def brewery_data():
         "state": "Michigan",
         "street": "4051 Chicago Dr SW",
     }
+
+
+@pytest.fixture
+def brewery_reponse_single():
+    """Fixture to provide mock brewery data."""
+    return [
+        {
+            "id": "b9c27692-5db5-44dd-aa88-b8b66b944f3c",
+            "name": "Osgood Brewing",
+            "brewery_type": "brewpub",
+            "address_1": "4051 Chicago Dr SW",
+            "address_2": "Bldg 1",
+            "address_3": "Unit 1",
+            "city": "Grandville",
+            "state_province": "Michigan",
+            "postal_code": "12345",
+            "country": "United States",
+            "longitude": "-85.76493039",
+            "latitude": "42.90907804",
+            "phone": "111-111-1111",
+            "website_url": "http://www.osgoodbrewing.com",
+            "state": "Michigan",
+            "street": "4051 Chicago Dr SW",
+        }
+    ]

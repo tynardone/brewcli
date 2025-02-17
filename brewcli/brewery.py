@@ -88,7 +88,7 @@ class BreweryAPI:
         Returns:
             list[dict]: A list of brewery details as dictionaries.
         """
-        return self._handle_request("random", {"size": number})
+        return self._handle_request(endpoint="random", params={"size": number})
 
     def get_brewery_by_id(self, brewery_id: str) -> Any:
         """
