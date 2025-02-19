@@ -63,19 +63,6 @@ def response():
     ]
 
 
-@pytest.fixture
-def mock_brewery_api(mocker: MockerFixture, response_data: list[dict]):
-    """Fixture to mock BreweryAPI and its context manager."""
-    mock_client = mocker.MagicMock()
-    mock_client.get_random_breweries.return_value = response_data
-
-    mock_api = mocker.MagicMock()
-    mock_api.__enter__.return_value = mock_client
-    mock_api.__exit__.return_value = None
-
-    return mocker.patch("brewcli.cli.BreweryAPI", return_value=mock_api)
-
-
 def test_random_success(
     mocker: MockerFixture, cli_runner: CliRunner, response_data: list[dict]
 ) -> None:
@@ -102,8 +89,6 @@ def test_random_success(
     assert result.exit_code == 0
 
     mock_client.get_random_breweries.assert_called_once_with(number=2)
-
-    print(mock_from_dict.call_args_list)
 
     assert mock_from_dict.call_count == 2
 
