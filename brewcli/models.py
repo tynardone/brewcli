@@ -141,8 +141,8 @@ class Address:
             coordinate = None
         return cls(
             address_one=data["address_1"],
-            address_two=data["address_2"],
-            address_three=data["address_3"],
+            address_two=data.get("address_2"),
+            address_three=data.get("address_3"),
             street=data["street"],
             city=data["city"],
             state=data["state"],

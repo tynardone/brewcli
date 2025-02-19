@@ -1,8 +1,9 @@
-import httpx
 import pytest
 from click.testing import CliRunner
+from pytest_mock import MockerFixture
 
-from brewcli.cli import cli
+from brewcli import cli
+from brewcli.models import Brewery
 
 # In order to test CLI have to mock the BreweryAPI client and responses.
 # Mock it  as "brewcli.cli.BreweryAPI"
@@ -26,29 +27,66 @@ def runner():
     return CliRunner()
 
 
-def test_random_success(mocker, cli_runner, brewery_reponse_single):
-    """
-    Tests that the 'random' command correctly retrieves and displays a brewery
-    by mocking an API request and verifying the expected output and request parameters.
-    """
+def test_random_success(mocker: MockerFixture, cli_runner: CliRunner) -> None:
+    """Test the CLI correctly fetches and displays random breweries."""
 
-    mock_response = mocker.Mock()
-    mock_response.status_code = 200
-    mock_response.json.return_value = brewery_reponse_single
+    mock_client = mocker.MagicMock(spec=cli.BreweryAPI)
+    mock_client.get_random_breweries.return_value = [
+        {
+            "id": "1",
+            "name": "Test Brewery",
+            "brewery_type": "micro",
+            "address_1": "123 Main St",
+            "city": "Sample City",
+            "state": "CA",
+            "postal_code": "12345",
+            "country": "USA",
+            "latitude": 37.7749,
+            "longitude": -122.4194,
+            "phone": "555-1234",
+            "website_url": "http://testbrewery.com",
+        },
+        {
+            "id": "2",
+            "name": "Another Brewery",
+            "brewery_type": "nano",
+            "address_1": "456 Another St",
+            "city": "Another City",
+            "state": "NY",
+            "postal_code": "67890",
+            "country": "USA",
+            "latitude": 40.7128,
+            "longitude": -74.0060,
+            "phone": "555-5678",
+            "website_url": "http://anotherbrewery.com",
+        },
+    ]
 
-    mock_client = mocker.Mock(spec=httpx.Client)
-    mock_client.get.return_value = mock_response
-    mocker.patch("httpx.Client", return_value=mock_client)
+    # Explicitly define __enter__ and __exit__ for context manager
+    mock_api = mocker.MagicMock()
+    mock_api.__enter__.return_value = mock_client
+    mock_api.__exit__.return_value = None
 
-    result = cli_runner.invoke(cli, ["random", "1"])
-    assert result.exit_code == 0
-    assert "Osgood Brewing" in result.output
-    assert "Grandville" in result.output
-    assert "http://www.osgoodbrewing.com" in result.output
+    # Patch BreweryAPI with the explicitly defined mock
+    mocker.patch("brewcli.cli.BreweryAPI", return_value=mock_api)
 
-    mock_client.get.assert_called_once_with(
-        "https://api.openbrewerydb.org/v1/breweries/random", params={"size": 1}
+    # Use the real from_dict method but still track its calls
+    mock_from_dict = mocker.patch.object(
+        Brewery, "from_dict", side_effect=Brewery.from_dict
     )
+
+    result = cli_runner.invoke(cli.random, ["2"])
+
+    assert result.exit_code == 0
+
+    mock_client.get_random_breweries.assert_called_once_with(number=2)
+
+    print(mock_from_dict.call_args_list)
+
+    assert mock_from_dict.call_count == 2
+
+    assert "Test Brewery" in result.output
+    assert "Another Brewery" in result.output
 
 
 def test_random_api_fail(mock_brewery_api, cli_runner):

@@ -97,6 +97,22 @@ class TestAddress:
         assert address.country == "United States"
         assert address.coordinate is None
 
+    def test_from_dict_optional_key_missing(self, brewery_data):
+        """Test that address can be instantiated from a dict missing keys
+        corresponding to optional fields.
+        """
+        del brewery_data["address_2"]
+        del brewery_data["address_3"]
+        address = Address.from_dict(brewery_data)
+        assert address.address_one == "4051 Chicago Dr SW"
+        assert address.city == "Grandville"
+        assert address.state == "Michigan"
+        assert address.postal_code == "12345"
+        assert address.country == "United States"
+        assert address.coordinate == Coordinate(
+            latitude=42.90907804, longitude=-85.76493039
+        )
+
     @pytest.mark.parametrize(
         "latitude,longitude",
         [("abc", "100"), ("100", "abc"), ("abc", "abc")],
