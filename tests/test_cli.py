@@ -27,16 +27,15 @@ def runner():
     return CliRunner()
 
 
-def test_random_success(mocker: MockerFixture, cli_runner: CliRunner) -> None:
-    """Test the CLI correctly fetches and displays random breweries."""
-
-    mock_client = mocker.MagicMock(spec=cli.BreweryAPI)
-    mock_client.get_random_breweries.return_value = [
+@pytest.fixture(name="response_data")
+def response():
+    return [
         {
             "id": "1",
             "name": "Test Brewery",
             "brewery_type": "micro",
             "address_1": "123 Main St",
+            "street": "Sample Ave",
             "city": "Sample City",
             "state": "CA",
             "postal_code": "12345",
@@ -51,6 +50,7 @@ def test_random_success(mocker: MockerFixture, cli_runner: CliRunner) -> None:
             "name": "Another Brewery",
             "brewery_type": "nano",
             "address_1": "456 Another St",
+            "street": "Sample Ave",
             "city": "Another City",
             "state": "NY",
             "postal_code": "67890",
@@ -61,6 +61,28 @@ def test_random_success(mocker: MockerFixture, cli_runner: CliRunner) -> None:
             "website_url": "http://anotherbrewery.com",
         },
     ]
+
+
+@pytest.fixture
+def mock_brewery_api(mocker: MockerFixture, response_data: list[dict]):
+    """Fixture to mock BreweryAPI and its context manager."""
+    mock_client = mocker.MagicMock()
+    mock_client.get_random_breweries.return_value = response_data
+
+    mock_api = mocker.MagicMock()
+    mock_api.__enter__.return_value = mock_client
+    mock_api.__exit__.return_value = None
+
+    return mocker.patch("brewcli.cli.BreweryAPI", return_value=mock_api)
+
+
+def test_random_success(
+    mocker: MockerFixture, cli_runner: CliRunner, response_data: list[dict]
+) -> None:
+    """Test the CLI correctly fetches and displays random breweries."""
+
+    mock_client = mocker.MagicMock(spec=cli.BreweryAPI)
+    mock_client.get_random_breweries.return_value = response_data
 
     # Explicitly define __enter__ and __exit__ for context manager
     mock_api = mocker.MagicMock()
