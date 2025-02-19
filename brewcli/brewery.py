@@ -76,7 +76,7 @@ class BreweryAPI:
         try:
             return response.json()
         except ValueError as exc:
-            raise ValueError(f"Failed to parse response from {url}") from exc
+            raise ValueError(f"Failed to return json response from {url}") from exc
 
     def get_random_breweries(self, number: int = 1) -> Any:
         """

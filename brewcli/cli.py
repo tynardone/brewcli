@@ -16,7 +16,7 @@ def cli() -> None:
 
 
 @cli.command()
-@click.argument("number", type=click.INT)
+@click.argument("number", type=click.IntRange(min=1))
 def random(number: int) -> None:
     """
     Retrieve a random set of breweries.
@@ -33,9 +33,9 @@ def random(number: int) -> None:
         except HTTPError as exc:
             click.echo(f"HTTP Exception for {exc.request.url} - {exc}", err=True)
             return
-        except KeyError as exc:
+        except (KeyError, TypeError) as exc:
             click.echo(
-                f"KeyError while instantiation Brewery from dictionary. Error: {exc}",
+                f"Error occurred while instantiating Brewery from response data: {exc}",
                 err=True,
             )
             return

@@ -26,8 +26,12 @@ def runner():
     return CliRunner()
 
 
-# Test random
 def test_random_success(mocker, cli_runner, brewery_reponse_single):
+    """
+    Tests that the 'random' command correctly retrieves and displays a brewery
+    by mocking an API request and verifying the expected output and request parameters.
+    """
+
     mock_response = mocker.Mock()
     mock_response.status_code = 200
     mock_response.json.return_value = brewery_reponse_single
@@ -39,6 +43,8 @@ def test_random_success(mocker, cli_runner, brewery_reponse_single):
     result = cli_runner.invoke(cli, ["random", "1"])
     assert result.exit_code == 0
     assert "Osgood Brewing" in result.output
+    assert "Grandville" in result.output
+    assert "http://www.osgoodbrewing.com" in result.output
 
     mock_client.get.assert_called_once_with(
         "https://api.openbrewerydb.org/v1/breweries/random", params={"size": 1}
