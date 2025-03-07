@@ -27,8 +27,8 @@ def runner():
     return CliRunner()
 
 
-@pytest.fixture(name="response_data")
-def response():
+@pytest.fixture()
+def response_data():
     return [
         {
             "id": "1",
@@ -64,7 +64,7 @@ def response():
 
 
 def test_random_success(
-    mocker: MockerFixture, cli_runner: CliRunner, response_data: list[dict]
+    mocker: MockerFixture, runner: CliRunner, response_data: list[dict]
 ) -> None:
     """Test the CLI correctly fetches and displays random breweries."""
 
@@ -77,14 +77,14 @@ def test_random_success(
     mock_api.__exit__.return_value = None
 
     # Patch BreweryAPI with the explicitly defined mock
-    mocker.patch("brewcli.cli.BreweryAPI", return_value=mock_api)
+    mocker.patch("brewcli.cli.BreweryAPI", return_value=mock_api, autospec=True)
 
     # Use the real from_dict method but still track its calls
     mock_from_dict = mocker.patch.object(
         Brewery, "from_dict", side_effect=Brewery.from_dict
     )
 
-    result = cli_runner.invoke(cli.random, ["2"])
+    result = runner.invoke(cli.random, ["2"])
 
     assert result.exit_code == 0
 

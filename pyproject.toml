@@ -13,10 +13,24 @@ requires-python = ">=3.12"
 dependencies = []
 
 
-
 [tool.ruff.lint]
-extend-select = ["E501"]
-
-
-[tool.pylint."messages control"]
-disable = ["R0902", "R0903", "C0115", "C0114", "E1101"]
+select = [
+    # pycodestyle
+    "E",
+    "W",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    "N",   # pep8 naming
+    "PL",  # pylint
+    "RUF", # ruff specific
+    "PD",  # pandas-vet
+]
+ignore = ["PLR2004"]
