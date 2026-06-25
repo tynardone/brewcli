@@ -120,5 +120,3 @@ class BreweryAPI:
         """
         params = search_query.to_params()
         return self._handle_request(params=params)
-
-
