@@ -1,7 +1,10 @@
 """Module providing data objects"""
 
+import logging
 from dataclasses import dataclass, fields
 from enum import Enum
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -137,7 +140,7 @@ class Address:
                 longitude=data["longitude"], latitude=data["latitude"]
             )
         except (ValueError, KeyError, TypeError) as exc:
-            print(f"Could not create coordinate for {data["name"]}: {exc}")
+            logger.warning("Could not create coordinate for %s: %s", data.get("name"), exc)
             coordinate = None
         return cls(
             address_one=data["address_1"],
@@ -177,8 +180,8 @@ class Brewery:
     name: str
     brewery_type: str
     address: Address
-    phone: str
-    website_url: str
+    phone: str | None
+    website_url: str | None
 
     @classmethod
     def from_dict(cls, data: dict) -> "Brewery":
@@ -232,8 +235,8 @@ class Brewery:
             name=data["name"],
             brewery_type=data["brewery_type"],
             address=address,
-            phone=data["phone"],
-            website_url=data["website_url"],
+            phone=data.get("phone"),
+            website_url=data.get("website_url"),
         )
 
     def to_flat_dict(self) -> dict:
@@ -261,18 +264,6 @@ class Brewery:
         }
 
 
-BREWERY_TYPES = [
-    "micro",
-    "nano",
-    "regional",
-    "brewpub",
-    "planning",
-    "contract",
-    "proprietor",
-    "closed",
-]
-
-
 class BreweryType(Enum):
     MICRO = "micro"
     NANO = "nano"
@@ -282,6 +273,9 @@ class BreweryType(Enum):
     CONTRACT = "contract"
     PROPRIETOR = "proprietor"
     CLOSED = "closed"
+
+
+BREWERY_TYPES = [t.value for t in BreweryType]
 
 
 @dataclass
@@ -348,10 +342,10 @@ class SearchQuery:
                     f"Invalid per_page: {self.per_page}. Must be an integer "
                     "from 1 to 200."
                 )
-        if self.type is not None and self.type not in BreweryType:
+        if self.type is not None and self.type not in BREWERY_TYPES:
             raise ValueError(
                 f"Invalid value for type: {self.type}. Must be one of "
-                f"{', '.join([t.value for t in BreweryType])}",
+                f"{', '.join(BREWERY_TYPES)}",
             )
         if self.coord is not None and not isinstance(self.coord, Coordinate):
             raise ValueError(

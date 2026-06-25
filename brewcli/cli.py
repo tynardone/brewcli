@@ -2,7 +2,7 @@ import click
 from httpx import HTTPError
 
 from .brewery import BreweryAPI
-from .models import BREWERY_TYPES, Brewery
+from .models import BREWERY_TYPES, Brewery, SearchQuery
 
 
 @click.group()
@@ -66,28 +66,60 @@ def by_id(brewery_id: str) -> None:
 @cli.command()
 @click.option("--by-city", type=click.STRING)
 @click.option("--by-country", type=click.STRING)
-@click.option("--by-dist", type=click.STRING)
+@click.option("--by-dist", type=click.STRING, help="Coordinates as 'lat,lon'")
 @click.option("--by-name", type=click.STRING)
-@click.option("--by-postal", type=click.INT)
+@click.option("--by-postal", type=click.STRING)
+@click.option("--by-state", type=click.STRING)
 @click.option("--by-type", type=click.Choice(BREWERY_TYPES, case_sensitive=False))
 def search(
     by_city: str | None,
     by_country: str | None,
     by_dist: str | None,
-    by_postal: int | None,
+    by_postal: str | None,
+    by_state: str | None,
     by_type: str | None,
     by_name: str | None,
-):
+) -> None:
     """Retrieve a set of breweries using one or more search terms."""
-    filters = {
-        "by_city": by_city,
-        "by_country": by_country,
-        "by_dist": by_dist,
-        "by_postal": by_postal,
-        "by_type": by_type,
-        "by_name": by_name,
-    }
-    filters = {k: v for k, v in filters.items() if v is not None}
+    from .models import Coordinate
+
+    coord = None
+    if by_dist:
+        try:
+            coord = Coordinate.from_str(by_dist)
+        except ValueError as exc:
+            click.echo(f"Invalid --by-dist value: {exc}", err=True)
+            return
+
+    query = SearchQuery(
+        city=by_city,
+        country=by_country,
+        coord=coord,
+        name=by_name,
+        postal=by_postal,
+        state=by_state,
+        type=by_type,
+    )
+
+    with BreweryAPI() as client:
+        try:
+            results = client.get_brewery_filters(query)
+        except HTTPError as exc:
+            click.echo(f"HTTP Exception: {exc}", err=True)
+            return
+
+    if not results:
+        click.echo("No breweries found.")
+        return
+
+    for data in results:
+        try:
+            brewery = Brewery.from_dict(data)
+        except (KeyError, TypeError) as exc:
+            click.echo(f"Error parsing brewery: {exc}", err=True)
+            continue
+        click.echo(brewery)
+        click.echo()
 
 
 cli.add_command(random)

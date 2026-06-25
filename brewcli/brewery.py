@@ -8,11 +8,7 @@ from brewcli.models import SearchQuery
 
 BASE_URL = "https://api.openbrewerydb.org/v1/breweries"
 HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
-    ),
-    "Accept": "application/json, text/html;q=0.9, */*;q=0.8",
+    "Accept": "application/json",
 }
 
 
@@ -126,9 +122,3 @@ class BreweryAPI:
         return self._handle_request(params=params)
 
 
-if __name__ == "__main__":
-    with BreweryAPI() as client:
-        print("Init client")
-        r = client.get_random_breweries(3)
-    print("Closing client")
-    print(r)
