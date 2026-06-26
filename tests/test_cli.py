@@ -64,7 +64,7 @@ def response_data():
 
 
 def test_random_success(
-    mocker: MockerFixture, runner: CliRunner, response_data: list[dict]
+    mocker: MockerFixture, cli_runner: CliRunner, response_data: list[dict]
 ) -> None:
     """Test the CLI correctly fetches and displays random breweries."""
 
@@ -84,7 +84,7 @@ def test_random_success(
         Brewery, "from_dict", side_effect=Brewery.from_dict
     )
 
-    result = runner.invoke(cli.random, ["2"])
+    result = cli_runner.invoke(cli.random, ["2"])
 
     assert result.exit_code == 0
 
@@ -96,31 +96,38 @@ def test_random_success(
     assert "Another Brewery" in result.output
 
 
-def test_random_api_fail(mock_brewery_api, cli_runner):
+@pytest.mark.skip(reason="not yet implemented")
+def test_random_api_fail():
     pass
 
 
 # Test by_id
-def test_by_id_success(mock_brewery_api, clirunner):
+@pytest.mark.skip(reason="not yet implemented")
+def test_by_id_success():
     pass
 
 
-def test_by_id_not_found(mock_brewery_api, clirunner):
+@pytest.mark.skip(reason="not yet implemented")
+def test_by_id_not_found():
     pass
 
 
-def test_by_id_api_fail(mock_brewery_api, clirunner):
+@pytest.mark.skip(reason="not yet implemented")
+def test_by_id_api_fail():
     pass
 
 
 # Test search
-def test_search_success(mock_brewery_api, clirunner):
+@pytest.mark.skip(reason="not yet implemented")
+def test_search_success():
     pass
 
 
-def test_search_no_results(mock_brewery_api, clirunner):
+@pytest.mark.skip(reason="not yet implemented")
+def test_search_no_results():
     pass
 
 
-def test_search_api_fail(mock_brewery_api, clirunner):
+@pytest.mark.skip(reason="not yet implemented")
+def test_search_api_fail():
     pass

@@ -58,10 +58,8 @@ class BreweryAPI:
             httpx.HTTPError: If the request fails.
             ValueError: If the response cannot be parsed as JSON.
         """
-        if endpoint:
-            url = f"{self.base_url}/{endpoint}"
-        else:
-            url = self.base_url
+
+        url = f"{self.base_url}/{endpoint}" if endpoint else self.base_url
 
         try:
             response = self.client.get(url, params=params)

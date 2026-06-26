@@ -332,17 +332,20 @@ class SearchQuery:
                 f"Invalid sort_order '{self.sort_order}'. Must be 'asc', 'desc', "
                 "or None."
             )
-        if (self.page is not None) and (not isinstance(self.page, int) or self.page < 1):
-                raise ValueError(
-                    f"Invalid page: {self.page}. Must be an integer greater than "
-                    "or equal to 1."
-                )
-        if (self.per_page is not None) and (not isinstance(self.per_page, int)) \
-            and not 1<= self.per_page <= 200:
-                raise ValueError(
-                    f"Invalid per_page: {self.per_page}. Must be an integer "
-                    "from 1 to 200."
-                )
+        if (self.page is not None) and (
+            not isinstance(self.page, int) or self.page < 1
+        ):
+            raise ValueError(
+                f"Invalid page: {self.page}. Must be an integer greater than "
+                "or equal to 1."
+            )
+        if (self.per_page is not None) and (
+            not isinstance(self.per_page, int) or not 1 <= self.per_page <= 200
+        ):
+            raise ValueError(
+                f"Invalid per_page: {self.per_page}. Must be an integer "
+                "from 1 to 200."
+            )
         if self.type is not None and self.type not in BREWERY_TYPES:
             raise ValueError(
                 f"Invalid value for type: {self.type}. Must be one of "

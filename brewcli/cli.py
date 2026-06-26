@@ -2,7 +2,7 @@ import click
 from httpx import HTTPError
 
 from .brewery import BreweryAPI
-from .models import BREWERY_TYPES, Brewery, SearchQuery
+from .models import BREWERY_TYPES, Brewery, Coordinate, SearchQuery
 
 
 @click.group()
@@ -71,18 +71,9 @@ def by_id(brewery_id: str) -> None:
 @click.option("--by-postal", type=click.STRING)
 @click.option("--by-state", type=click.STRING)
 @click.option("--by-type", type=click.Choice(BREWERY_TYPES, case_sensitive=False))
-def search(
-    by_city: str | None,
-    by_country: str | None,
-    by_dist: str | None,
-    by_postal: str | None,
-    by_state: str | None,
-    by_type: str | None,
-    by_name: str | None,
-) -> None:
+def search(**filters: str | None) -> None:
     """Retrieve a set of breweries using one or more search terms."""
-    from .models import Coordinate
-
+    by_dist = filters.pop("by_dist")
     coord = None
     if by_dist:
         try:
@@ -91,15 +82,9 @@ def search(
             click.echo(f"Invalid --by-dist value: {exc}", err=True)
             return
 
-    query = SearchQuery(
-        city=by_city,
-        country=by_country,
-        coord=coord,
-        name=by_name,
-        postal=by_postal,
-        state=by_state,
-        type=by_type,
-    )
+    # Map remaining --by-* options (e.g. by_city) to SearchQuery fields (city).
+    fields = {key.removeprefix("by_"): value for key, value in filters.items()}
+    query = SearchQuery(coord=coord, **fields)
 
     with BreweryAPI() as client:
         try:
