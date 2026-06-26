@@ -13,8 +13,8 @@
 ## Features
 
 - Fetch a list of random breweries.
-- Search breweries by city, state, or brewery type.
-- Retrieve detailed information about a specific brewery.
+- Search breweries by city, country, name, postal code, state, type, or distance from a coordinate.
+- Retrieve detailed information about a specific brewery by its ID.
 - Output data in a user-friendly format.
 
 ## Installation
@@ -29,59 +29,70 @@ pip install brewcli
 
 Here are some examples of how to use brewcli:
 
-Get a Random Brewery
+Get a number of random breweries (the count is required):
 
 ```sh
-brewcli random
+brewcli random 5
 ```
 
-Search Breweries by City
+Look up a specific brewery by its ID:
 
 ```sh
-brewcli search --city "Cincinnati"
+brewcli by-id b54b16e1-ac3b-4bff-a11f-f7ae9ddc27e0
 ```
 
-Search Breweries by State and Type
+Search breweries by city:
 
 ```sh
-brewcli search --state "California" --type "micro"
+brewcli search --by-city "Cincinnati"
 ```
 
-*For more examples and usage instructions, please refer to the documentation.*
+Search breweries by state and type:
+
+```sh
+brewcli search --by-state "California" --by-type "micro"
+```
+
+Available `search` filters: `--by-city`, `--by-country`, `--by-dist` (coordinates as
+`'lat,lon'`), `--by-name`, `--by-postal`, `--by-state`, and `--by-type` (one of:
+`micro`, `nano`, `regional`, `brewpub`, `planning`, `contract`, `proprietor`, `closed`).
+
+Run `brewcli --help` or `brewcli <command> --help` for full usage details.
 
 ## Development setup
 
-To set up a development environment for brewcli, follow these steps:
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management and is
+pinned to Python 3.12 (see `.python-version`).
 
 Clone the repository:
 
 ```sh
-git clone https://github.com/yourname/brewcli.git
+git clone https://github.com/tynardone/brewcli.git
 cd brewcli
 ```
 
-Set up a virtual environment:
+Create the virtual environment and install all dependencies (runtime + dev) from the
+lockfile:
 
 ```sh
-python -m venv venv
-source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+uv sync
 ```
 
-Install dependencies:
+Run the CLI:
 
 ```sh
-pip install -r requirements.txt
+uv run brewcli --help
 ```
 
 Run tests:
 
 ```sh
-pytest
+uv run pytest
 ```
 
 ## Release History
 
-- 0.0.1
+- 0.1.0
   - Work in progress
 
 ## Meta
@@ -94,7 +105,7 @@ Distributed under the MIT license. See ``LICENSE`` for more information.
 
 <!-- Markdown link & img dfn's -->
 [python-versions]: https://img.shields.io/pypi/pyversions/brewcli
-[license]: https://img.shields.io/github/license/yourname/brewcli
+[license]: https://img.shields.io/github/license/tynardone/brewcli
 [downloads]: https://img.shields.io/pypi/dm/brewcli
 [ruff-style]:https://img.shields.io/badge/code%20style-ruff-000000?style=flat&logo=python
 [mypy-check]:https://img.shields.io/badge/type%20checked-mypy-blue?style=flat&logo=python

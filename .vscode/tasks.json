@@ -19,7 +19,7 @@
 				"docker-build"
 			],
 			"python": {
-				"file": "brewcli/__main__.py"
+				"file": "src/brewcli/__main__.py"
 			}
 		}
 	]
