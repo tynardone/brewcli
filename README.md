@@ -114,8 +114,11 @@ uv run pytest
 
 ## Release History
 
+- 0.2.0
+  - Rich terminal output: brewery lists render as a color table and single
+    lookups as a detail panel, with clickable website links.
 - 0.1.0
-  - Work in progress
+  - Initial release: `random`, `by-id`, and `search` commands.
 
 ## Meta
 
