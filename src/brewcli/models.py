@@ -343,8 +343,7 @@ class SearchQuery:
             not isinstance(self.per_page, int) or not 1 <= self.per_page <= 200
         ):
             raise ValueError(
-                f"Invalid per_page: {self.per_page}. Must be an integer "
-                "from 1 to 200."
+                f"Invalid per_page: {self.per_page}. Must be an integer from 1 to 200."
             )
         if self.type is not None and self.type not in BREWERY_TYPES:
             raise ValueError(

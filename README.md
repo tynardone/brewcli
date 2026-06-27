@@ -29,16 +29,38 @@ pip install brewcli
 
 Here are some examples of how to use brewcli:
 
+Lists of breweries are rendered as a color table, and single-brewery lookups as a
+detail panel. Website URLs are shown as clickable links in terminals that support them.
+
 Get a number of random breweries (the count is required):
 
 ```sh
-brewcli random 5
+brewcli random 3
+```
+
+```text
+  Name                 Type       Location            Phone        Website
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  MadTree Brewing      regional   Cincinnati, Ohio    5138368733   madtreebrewing.com
+  Rhinegeist Brewery   micro      Cincinnati, Ohio    —            rhinegeist.com
+  Fifty West Brewing   brewpub    Cincinnati, Ohio    5138916996   fiftywestbrew.com
 ```
 
 Look up a specific brewery by its ID:
 
 ```sh
 brewcli by-id b54b16e1-ac3b-4bff-a11f-f7ae9ddc27e0
+```
+
+```text
+╭─ MadTree Brewing  (regional) ─╮
+│ 5164 Kennedy Ave              │
+│ Cincinnati, Ohio 45213        │
+│ United States                 │
+│                               │
+│ ☎  5138368733                 │
+│ 🌐 madtreebrewing.com         │
+╰───────────────────────────────╯
 ```
 
 Search breweries by city:

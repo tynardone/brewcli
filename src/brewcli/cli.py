@@ -3,6 +3,7 @@ from httpx import HTTPError
 
 from .brewery import BreweryAPI
 from .models import BREWERY_TYPES, Brewery, Coordinate, SearchQuery
+from .render import render_breweries, render_brewery
 
 
 @click.group()
@@ -40,9 +41,7 @@ def random(number: int) -> None:
             )
             return
 
-    for brewery in breweries:
-        click.echo(brewery)
-        click.echo()
+    render_breweries(breweries)
 
 
 @cli.command()
@@ -60,7 +59,7 @@ def by_id(brewery_id: str) -> None:
             click.echo(f"HTTP Exception for {exc.request.url} - {exc}", err=True)
             return
 
-    click.echo(brewery)
+    render_brewery(brewery)
 
 
 @cli.command()
@@ -82,9 +81,15 @@ def search(**filters: str | None) -> None:
             click.echo(f"Invalid --by-dist value: {exc}", err=True)
             return
 
-    # Map remaining --by-* options (e.g. by_city) to SearchQuery fields (city).
-    fields = {key.removeprefix("by_"): value for key, value in filters.items()}
-    query = SearchQuery(coord=coord, **fields)
+    query = SearchQuery(
+        coord=coord,
+        city=filters["by_city"],
+        country=filters["by_country"],
+        name=filters["by_name"],
+        postal=filters["by_postal"],
+        state=filters["by_state"],
+        type=filters["by_type"],
+    )
 
     with BreweryAPI() as client:
         try:
@@ -97,14 +102,16 @@ def search(**filters: str | None) -> None:
         click.echo("No breweries found.")
         return
 
+    breweries: list[Brewery] = []
     for data in results:
         try:
-            brewery = Brewery.from_dict(data)
+            breweries.append(Brewery.from_dict(data))
         except (KeyError, TypeError) as exc:
             click.echo(f"Error parsing brewery: {exc}", err=True)
             continue
-        click.echo(brewery)
-        click.echo()
+
+    if breweries:
+        render_breweries(breweries)
 
 
 cli.add_command(random)
