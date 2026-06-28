@@ -7,7 +7,7 @@ packages = ["src/brewcli"]
 
 [project]
 name = "brewcli"
-version = "0.2.0"
+version = "0.2.1"
 description = "A command-line interface for exploring breweries via the Open Brewery DB API."
 readme = "README.md"
 authors = [{ name = "Tyler Nardone", email = "tynardone@gmail.com" }]
@@ -21,7 +21,8 @@ classifiers = [
     "Intended Audience :: End Users/Desktop",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
-    "Topic :: Breweries",
+    "Topic :: Utilities",
+    "Typing :: Typed",
 ]
 dependencies = [
     "click>=8.1.8",

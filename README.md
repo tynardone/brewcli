@@ -114,6 +114,12 @@ uv run pytest
 
 ## Release History
 
+- 0.2.1
+  - Fix a crash when the API returned an HTTP error (`random`/`by-id` now show a
+    friendly message instead of a traceback).
+  - Fix an invalid PyPI classifier that broke the package build.
+  - Ship `py.typed` so downstream type checkers use the bundled annotations.
+  - Expand the test suite (CLI commands, error paths, and output rendering).
 - 0.2.0
   - Rich terminal output: brewery lists render as a color table and single
     lookups as a detail panel, with clickable website links.
