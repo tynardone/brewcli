@@ -35,7 +35,7 @@ def _location(brewery: Brewery) -> str:
     return ", ".join(parts) if parts else PLACEHOLDER
 
 
-def render_breweries(breweries: list[Brewery]) -> None:
+def render_breweries(breweries: list[Brewery], out: Console = console) -> None:
     """Print a list of breweries as a table."""
     table = Table(box=SIMPLE_HEAVY, header_style="bold magenta", expand=False)
     table.add_column("Name", style="bold cyan")
@@ -53,10 +53,10 @@ def render_breweries(breweries: list[Brewery]) -> None:
             _website_text(brewery.website_url),
         )
 
-    console.print(table)
+    out.print(table)
 
 
-def render_brewery(brewery: Brewery) -> None:
+def render_brewery(brewery: Brewery, out: Console = console) -> None:
     """Print a single brewery as a detailed panel."""
     address = brewery.address
     body = Text()
@@ -77,6 +77,4 @@ def render_brewery(brewery: Brewery) -> None:
     title = Text(brewery.name, style="bold cyan")
     title.append(f"  ({brewery.brewery_type})", style="green")
 
-    console.print(
-        Panel(body, title=title, title_align="left", box=ROUNDED, expand=False)
-    )
+    out.print(Panel(body, title=title, title_align="left", box=ROUNDED, expand=False))

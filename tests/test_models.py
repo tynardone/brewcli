@@ -382,6 +382,12 @@ class TestSearchQuery:
                 type=brew_type,
             )
 
+    @pytest.mark.parametrize("bad_coord", ["100,100", (100, 100), 100])
+    def test_coord_must_be_coordinate_instance(self, bad_coord):
+        """`coord` must be a Coordinate; other types raise ValueError."""
+        with pytest.raises(ValueError, match=r"Must be of.*type Coordinate"):
+            SearchQuery(coord=bad_coord)
+
     def test_to_params_all_fields(self, valid_query_inputs):
         """
         Test that to_params creates expecte key-value pairs with proper formatting

@@ -32,7 +32,7 @@ def random(number: int) -> None:
                 for brewery in client.get_random_breweries(number=number)
             ]
         except HTTPError as exc:
-            click.echo(f"HTTP Exception for {exc.request.url} - {exc}", err=True)
+            click.echo(f"HTTP error: {exc}", err=True)
             return
         except (KeyError, TypeError) as exc:
             click.echo(
@@ -56,7 +56,7 @@ def by_id(brewery_id: str) -> None:
             click.echo(f"Error occurred creating Brewery from response data: {exc}")
             return
         except HTTPError as exc:
-            click.echo(f"HTTP Exception for {exc.request.url} - {exc}", err=True)
+            click.echo(f"HTTP error: {exc}", err=True)
             return
 
     render_brewery(brewery)

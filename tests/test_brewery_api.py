@@ -3,6 +3,7 @@ import httpx
 import pytest
 
 from brewcli.brewery import BreweryAPI
+from brewcli.models import SearchQuery
 
 
 def test_brewery_api_initialization():
@@ -98,3 +99,26 @@ def test_get_random_breweries_success(httpx_mock):
     assert len(httpx_mock.get_requests()) == 1
     request = httpx_mock.get_requests()[0]
     assert request.url == "https://api.openbrewerydb.org/v1/breweries/random?size=2"
+
+
+def test_get_brewery_filters(httpx_mock, api_client):
+    """`get_brewery_filters` hits the base endpoint with the query's params."""
+    mock_response = [{"id": "1", "name": "Filtered Brewery"}]
+    httpx_mock.add_response(json=mock_response)
+
+    query = SearchQuery(city="Denver", type="micro", per_page=5)
+    response = api_client.get_brewery_filters(query)
+
+    assert response == mock_response
+    request = httpx_mock.get_requests()[0]
+    assert request.url.params["by_city"] == "Denver"
+    assert request.url.params["by_type"] == "micro"
+    assert request.url.params["per_page"] == "5"
+
+
+def test_get_brewery_filters_http_error(httpx_mock, api_client):
+    """`get_brewery_filters` propagates HTTP errors as httpx.HTTPError."""
+    httpx_mock.add_response(status_code=500)
+
+    with pytest.raises(httpx.HTTPError):
+        api_client.get_brewery_filters(SearchQuery(city="Denver"))
