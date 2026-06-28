@@ -118,3 +118,7 @@ class BreweryAPI:
         """
         params = search_query.to_params()
         return self._handle_request(params=params)
+
+    def get_brewery_search(self, search_str: str) -> Any:
+        # TODO: implement
+        return self._handle_request(endpoint="search", params={"search": search_str})
