@@ -21,7 +21,7 @@ classifiers = [
     "Intended Audience :: End Users/Desktop",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
-    "Topic :: Utilities",
+    "Topic :: Breweries",
 ]
 dependencies = [
     "click>=8.1.8",
